@@ -32,6 +32,17 @@ function Chamber(i, cx, cy, cw, ch, cp) {
     this.item = newammo
   }
 
+  this.addSink = function() {
+  w = this.pathweight * 2
+    r = random(1)
+    if (r < 0.5) {
+        p = [this.x + w/2, this.m[1]]
+    } else {
+        p = [this.m[0], this.y + w/2]
+    }
+    this.item = new Sink(p[0], p[1], w)
+  }
+
   this.addCash = function() {
     var newcash = new Cash(this.m[0], this.m[1], this.pathweight * 2)
     this.item = newcash
@@ -235,6 +246,47 @@ function Ammo(x, y, w) {
     noStroke()
     rect(x + ((this.x + (this.width / 2) - (this.width / 16)) * w), y + ((this.y + (this.height / 2) - (this.height * (1 / 3))) * w), (this.width / 8) * w, this.height * (2 / 3) * w)
     rect(x + ((this.x + (this.width / 2) - (this.height *  (1 / 3))) * w), y + ((this.y + (this.height / 2) - (this.width / 16)) * w), this.height * (2 / 3) * w, (this.width / 8) * w)
+  }
+}
+
+function Sink(x, y, w) {
+  this.index = "sink"
+  this.x = x - (w / 2)
+  this.y = y - (w * (3 / 10))
+  this.width = w
+  this.height = w
+  this.col = [55, 55, 55, 255]
+  this.symbolcol = [10, 10, 255, 255]
+  this.used = false
+
+  this.within = function(x, y, r) {
+    if (x >= this.x - r && y >= this.y - r && x <= this.x + this.width + r && y <= this.y + this.height + r) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  this.action = function(player) {
+    player.lives = player.maxlives
+    this.used = 255
+  }
+
+  this.disp = function(x, y, w) {
+    noStroke()
+    fill(this.col)
+    rect(x + (this.x * w), y + (this.y * w), this.width * w, this.height * w)
+    if (typeof this.used == "number") {
+      this.used -= 2
+      this.symbolcol[3] = this.used
+      if (this.used < 0) {
+        this.used = false
+      }
+    }
+    if (this.used != true) {
+      fill(this.symbolcol)
+      rect(x + (this.x * w) + (this.width * w) / 10, y + (this.y * w) + (this.height * w) / 10, this.width * (8/10) * w, this.height * (8/10) * w)
+    }
   }
 }
 
