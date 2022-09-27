@@ -148,7 +148,7 @@ function Ripper(x, y, size, chamber) {
   this.pointingAt = []
   this.col = [150, 150, 150, 255]
   this.walkingspeed = size / 8
-  this.gun = new GunR1(this)
+  this.gun = new Mouth(this)
   this.gun.resize(this.chamber.pathweight)
   this.t = 0
   this.lastshot = -1000
@@ -222,7 +222,7 @@ function Ripper(x, y, size, chamber) {
           }
         }
         if ((this.t - this.lastshot) > this.gun.shootingspeed) {
-          this.gun.shoot()
+          this.gun.shootSeveral()
           this.lastshot = this.t
         }
       } else {
@@ -266,7 +266,6 @@ function Ripper(x, y, size, chamber) {
   }
 
   this.disp = function(x, y, w) {
-    this.gun.disp(x, y, w)
     translate(x + (this.x * w), y + (this.y * w))
     rotate(this.rotation)
     translate(-(x + (this.x * w)), -(y + (this.y * w)))
@@ -285,5 +284,6 @@ function Ripper(x, y, size, chamber) {
     translate(x + (this.x * w), y + (this.y * w))
     rotate(-this.rotation)
     translate(-(x + (this.x * w)), -(y + (this.y * w)))
+    this.gun.disp(x, y, w)
   }
 }

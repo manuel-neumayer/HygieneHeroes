@@ -18,8 +18,8 @@ function Player() {
   this.cash = 0
   this.instantcash = 10
   this.keys = 0
-  this.maxlives = 3
-  this.lives = 3
+  this.maxlives = 10000
+  this.lives = 10000
   this.maxammo = 20
   this.ammo = 20
 

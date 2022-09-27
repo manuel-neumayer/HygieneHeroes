@@ -478,6 +478,17 @@ function GunR1(owner, pathweight) {
     this.protectiles.push(newprotectile)
   }
 
+  this.shootSeveral = function() {
+    this.owner.cash -= this.costs
+    for (angle = -PI/16; angle <= PI/16; angle += PI/32) {
+      var vec1 = createVector(this.owner.pointingAt[0] - this.x, this.owner.pointingAt[1] - this.y)
+      vec1.setMag(this.protectilespeed)
+      vec1.rotate(angle)
+      var newprotectile = new Protectile(this, this.owner.chamber, this.owner, this.x, this.y, vec1.x, vec1.y, this.owner.chamber.pathweight)
+      this.protectiles.push(newprotectile)
+    }
+  }
+
   this.action = function(enemy) {
     enemy.hit(this.minuslives)
     this.owner.cash += enemy.instantcash
@@ -583,5 +594,110 @@ function Protectile(gun, chamber, owner, x, y, speedX, speedY, pathweight) {
     translate(x + (this.x * w), y + (this.y * w))
     rotate(-this.rotation)
     translate(-(x + (this.x * w)), -(y + (this.y * w)))
+  }
+}
+
+function Mouth(owner, pathweight) {
+  this.name = "Mouth"
+  this.owner = owner
+  this.cost = 0
+  this.costs = 0
+  this.shootingspeed = 60
+  this.minuslives = 1
+  this.col = [255, 0, 0, 255]
+  this.strokecol = [51, 51, 51, 255]
+  this.width = pathweight / 4
+  this.height = pathweight
+  this.size = pathweight / 6
+  this.protectilespeed = pathweight / 8
+  this.protectiles = []
+
+  this.resize = function(pathweight) {
+    this.width = pathweight / 4
+    this.height = pathweight
+    this.size = pathweight / 6
+    this.protectilespeed = pathweight / 8
+  }
+
+  this.shoot = function() {
+    this.owner.cash -= this.costs
+    var vec1 = createVector(this.owner.pointingAt[0] - this.x, this.owner.pointingAt[1] - this.y)
+    vec1.setMag(this.protectilespeed)
+    var newprotectile = new Protectile(this, this.owner.chamber, this.owner, this.x, this.y, vec1.x, vec1.y, this.owner.chamber.pathweight)
+    this.protectiles.push(newprotectile)
+  }
+
+  this.shootSeveral = function() {
+    this.owner.cash -= this.costs
+    for (angle = -PI/16; angle <= PI/16; angle += PI/32) {
+      var vec1 = createVector(this.owner.pointingAt[0] - this.x, this.owner.pointingAt[1] - this.y)
+      vec1.setMag(this.protectilespeed)
+      vec1.rotate(angle)
+      var newprotectile = new Protectile(this, this.owner.chamber, this.owner, this.x, this.y, vec1.x, vec1.y, this.owner.chamber.pathweight)
+      this.protectiles.push(newprotectile)
+    }
+  }
+
+  this.action = function(enemy) {
+    enemy.hit(this.minuslives)
+    this.owner.cash += enemy.instantcash
+  }
+
+  this.update = function(enemy) {
+    var vec1 = createVector(this.owner.width / 2, 0)
+    vec1 = turnVector(vec1, map(this.owner.rotation, 0, TWO_PI, 360, 0))
+    this.x = this.owner.x + vec1.x
+    this.y = this.owner.y + vec1.y
+    var vec1 = createVector(this.owner.pointingAt[0] - this.x, this.owner.pointingAt[1] - this.y)
+    this.rotation = vec1.heading() + PI/2
+    for (gui = this.protectiles.length - 1; gui >= 0; gui--) {
+      if (this.protectiles[gui].update(enemy)) {
+        this.protectiles.splice(gui, 1)
+      }
+    }
+  }
+
+  this.disp = function(x, y, w) {
+    translate(x + (this.owner.x * w), y + (this.owner.y * w))
+    rotate(this.owner.rotation)
+    translate(-(x + (this.owner.x * w)), -(y + (this.owner.y * w)))
+    fill(this.col)
+    stroke(this.strokecol)
+    //rectMode(CENTER)
+    //rect(x + ((this.owner.x * w)), y + (this.owner.y - (this.owner.height/2))*w, this.width * w, this.height* w)
+    //rectMode(CORNER)
+    ellipse(x + ((this.owner.x * w)), y + (this.owner.y - (this.owner.height/4))*w, this.height/2 * w, this.width* w)
+    fill(this.col)
+    translate(x + (this.owner.x * w), y + (this.owner.y * w))
+    rotate(-this.owner.rotation)
+    translate(-(x + (this.owner.x * w)), -(y + (this.owner.y * w)))
+    for (gui = 0; gui < this.protectiles.length; gui++) {
+      this.protectiles[gui].disp(x, y, w)
+    }
+  }
+
+  this.textbox = function(x, y, boxwidth, boxheight) {
+    fill(200, 200, 0, 255)
+    textSize(boxheight / 7)
+    textAlign(LEFT, TOP)
+    text(this.name, x + 10, y)
+    y += textSize() + 5
+    fill(0)
+    textSize(boxheight / 10)
+    text("Reload-Time:   " + this.shootingspeed, x + 10, y)
+    y += textSize() + 5
+    text("Shot-Speed:    " + round(this.protectilespeed * 10000), x + 10, y)
+    y += textSize() + 5
+    text("Damage:         " + this.minuslives, x + 10, y)
+    y += textSize() + 5
+    text("Cost p/Shot:    " + this.costs, x + 10, y)
+  }
+
+  this.buy = function(player) {
+    var newgun = new GunR1(player)
+    newgun.resize(player.chamber.pathweight)
+    player.guns.push(newgun)
+    player.gun = newgun
+    player.cash -= this.cost
   }
 }
