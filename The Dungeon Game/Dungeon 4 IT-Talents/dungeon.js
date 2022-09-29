@@ -209,8 +209,12 @@ function Dungeon() {
       var index = floor(random(this.chambers.length))
       this.chambers[index].addKey()
     }
+    for (i = 0; i < (this.chambers.length); i++) {
+      var index = floor(random(this.chambers.length))
+      this.chambers[index].addSink()
+    }    
     for (i = 0; i < ceil(this.chambers.length / 15); i++) {
-      this.chambers[floor(random(this.chambers.length))].addAid()
+      //this.chambers[floor(random(this.chambers.length))].addAid()
       this.chambers[floor(random(this.chambers.length))].addAmmo()
       this.chambers[floor(random(this.chambers.length))].addRipper(1)
     }

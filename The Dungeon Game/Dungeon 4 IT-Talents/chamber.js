@@ -33,13 +33,17 @@ function Chamber(i, cx, cy, cw, ch, cp) {
   }
 
   this.addSink = function() {
-  w = this.pathweight * 2
+    w = this.pathweight * 2
     r = random(1)
-    if (r < 0.5) {
+    if (r < 0.25) {
         p = [this.x + w/2, this.m[1]]
-    } else {
+    } else if (r < 0.5) {
         p = [this.m[0], this.y + w/2]
-    }
+    } else if (r < 0.75) {
+      p = [this.x + this.width - w/2, this.m[1]]
+    } else {
+      p = [this.m[0], this.y + this.height - w/2]
+  }
     this.item = new Sink(p[0], p[1], w)
   }
 
@@ -252,7 +256,7 @@ function Ammo(x, y, w) {
 function Sink(x, y, w) {
   this.index = "sink"
   this.x = x - (w / 2)
-  this.y = y - (w * (3 / 10))
+  this.y = y - (w / 2)
   this.width = w
   this.height = w
   this.col = [55, 55, 55, 255]
@@ -268,8 +272,11 @@ function Sink(x, y, w) {
   }
 
   this.action = function(player) {
-    player.lives = player.maxlives
-    this.used = 255
+    if (this.used == false) {
+      player.lives = player.maxlives
+      this.used = 255
+    }
+    animations.push(new Animation("You washed your hands!"))
   }
 
   this.disp = function(x, y, w) {
@@ -280,7 +287,7 @@ function Sink(x, y, w) {
       this.used -= 2
       this.symbolcol[3] = this.used
       if (this.used < 0) {
-        this.used = false
+        this.used = true
       }
     }
     if (this.used != true) {

@@ -96,7 +96,9 @@ function Player() {
     if (this.chamber.item) {
       if (this.chamber.item.within(this.x, this.y, this.width / 2)) {
         this.chamber.item.action(this)
-        this.chamber.item = undefined
+        if (this.chamber.item.index != "sink") {
+          this.chamber.item = undefined
+        }
       }
     }
     this.gun.update()

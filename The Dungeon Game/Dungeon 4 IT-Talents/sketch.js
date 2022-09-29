@@ -1,8 +1,10 @@
 var dungeon, buttons
 var pause = false
+var animations
 
 function setup() {
   createCanvas(windowWidth, windowHeight)
+  animations = []
   dungeon = new Dungeon()
   dungeon.setup(10)
   buttons = new Buttons()
@@ -18,6 +20,9 @@ function draw() {
     dungeon.disp()
   }
   buttons.disp()
+  for (i = 0; i < animations.length; i++) {
+    animations[i].disp()
+  }
 }
 
 function mouseWheel(event) {
