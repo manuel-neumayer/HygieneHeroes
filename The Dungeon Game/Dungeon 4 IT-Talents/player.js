@@ -1,3 +1,4 @@
+//Das player.js Skript enthält die Player() constructerfunction mit der die Spielfigur gesteuert und visualisiert wird.
 function Player() {
   this.chamber = 0
   this.x = 0
@@ -18,11 +19,13 @@ function Player() {
   this.cash = 0
   this.instantcash = 10
   this.keys = 0
-  this.maxlives = 10000
-  this.lives = 10000
+  this.maxlives = 3
+  this.lives = 3
   this.maxammo = 20
   this.ammo = 20
 
+  //Mit der .resize() function kann die Größe der Spielfigur der Map angepasst werde. Sie betrifft auch seine Gehgeschwindigkeit
+  //und die Größe seiner Waffe (Siehe Gun(1-5).resize())
   this.resize = function(size) {
     this.width = size
     this.height = size / 2
@@ -31,9 +34,11 @@ function Player() {
     this.gun.resize(size)
   }
 
+  //Die .goToChamber() befördert den Spieler in eine bestimmte Kammer (cahmber).
   this.goToChamber = function(chamber, px, py) {
     this.chamber = chamber
     if (px && py) {
+      //Sind die Variabeln px, py definiert kann seine Position direkt bestimmt werden (Siehe Connection.check())
       this.x = px
       this.y = py
     } else {
@@ -42,19 +47,27 @@ function Player() {
     }
   }
 
+  //Die .hit() function bestimmt, was passiert wenn der Spieler von einem Monster attakiert wird.
   this.hit = function(minuslives) {
     this.lives -= minuslives
+    //Die Variabel minuslives bestimmt wie viele Leben dem Spieler abgezogen werden.
     this.hitted = 2
+    //Die .hitted Variabel bewirkt, dass die Spielfigur nach einem Treffer kruz rot gefärbt wird.
   }
 
+  //Die .shoot() function wird aufgerufen, wenn der Spieler schießt und leitet entsprechende Reaktionen ein. (Siehe mousePressed())
   this.shoot = function() {
     if (this.ammo > 0 && (this.t - this.lastshot) > this.gun.shootingspeed) {
+      //Der Spieler kann natürlich nur schießen wenn er genügend Munition (.ammo) hat. Die Variabel .lastshot gibt an, wann er das letzte
+      //Mal schoss. Er kann nur erneut schießen wenn die Nachladezeit seiner Waffe (.gun.shootingspeed) bereits abgelaufen ist.
       this.gun.shoot()
+      //Siehe Gun(1-5).shoot()
       this.ammo--
       this.lastshot = this.t
     }
   }
 
+  //Die .within() function gibt an, ob ein Objekt mit den Koordinaten x, y und dem Radius r die Spielfigur berührt.
   this.within = function(x, y, r) {
     if (dist(this.x, this.y, x, y) <= (this.width + this.height) / 2) {
       if (typeof(r) === "undefined") {
@@ -66,6 +79,7 @@ function Player() {
           return true
         }
       }
+      //Nachdem überprüft wurde, ob der runde Kop der Spielfigur berührt wurde, wird der abgerundet rechteckige Rumpf überprüft
       var circles = 5
       var circledist = (this.width - this.height) / (circles - 1)
       var vec1 = turnVector(createVector(100, 0), map(this.rotation, 0, TWO_PI, 360, 0))
@@ -75,9 +89,13 @@ function Player() {
       var movevec = vec1
       movevec.mult(-1)
       movevec.setMag(circledist)
+      //Dies geschiet mit mehreren Kreisen, die in den Rumpf bildlich gesprochen eingeschleust werden.
       for (wi = 0; wi < circles; wi++) {
         if (typeof(r) === "undefined") {
           if (dist(acpoint.x, acpoint.y, x, y) <= this.height / 2) {
+            //Ist der Abstand vom Mittelpunkt einer der Kreise im Rumpf zum den x, y Koordinaten kleiner dem Radius des Kreises
+            //(der die Kanten des Rumpfes berührt) und gegebenenfalls dem zweiten Radius r, berührt das Objekt den Kreis und damit
+            //den Rumpf der Spielfigur
             return true
           }
         } else {
@@ -87,45 +105,30 @@ function Player() {
         }
         acpoint.add(movevec)
       }
+      //Das wird für eine von der Variabel circles festgelegte Anzahl an Kreisen gemacht (umso mehr Kreise umso genauer).
+      //Wird keiner der Kreise berührt kehrt die function mit "false" zurück.
       return false
     }
   }
 
+  //Die .update() function steuert den Spieler, überprüft, ob der Spieler ein Item berührt (Siehe Key()) und steuert seine Waffe an.
   this.update = function() {
     this.move()
+    //Siehe .move()
     if (this.chamber.item) {
       if (this.chamber.item.within(this.x, this.y, this.width / 2)) {
+        //Berührt der Spieler ein Item, wird die Aktion des Items ausgeführt (Siehe Key.action()) und das Item von der Kammer entfernt.
         this.chamber.item.action(this)
-        if (this.chamber.item.index != "sink") {
-          this.chamber.item = undefined
-        }
+        this.chamber.item = undefined
       }
     }
     this.gun.update()
+    //Siehe Gun(1-5).update()
     this.t++
   }
 
+  //Die .move() function bewegt den Spieler über das Spielfeld.
   this.move = function() {
-    /*
-    var vec1 = createVector(this.walkingspeed, 0)
-    vec1 = turnVector(vec1, map(-this.rotation + PI/2, 0, TWO_PI, 0, 360))
-    if (keyIsDown(87)) {
-        this.x += vec1.x
-        this.y += vec1.y
-    }
-    if (keyIsDown(83)) {
-        this.x -= vec1.x
-        this.y -= vec1.y
-    }
-    if (keyIsDown(65)) {
-        this.x -= vec1.y
-        this.y += vec1.x
-    }
-    if (keyIsDown(68)) {
-        this.x += vec1.y
-        this.y -= vec1.x
-    }
-    */
     if (keyIsDown(87)) {
         this.y -= this.walkingspeed
     }
@@ -138,11 +141,14 @@ function Player() {
     if (keyIsDown(68)) {
         this.x += this.walkingspeed
     }
+    //Wird die Taste W, A, S ode D gedrückt, bewegt sich der Spieler nach oben, links, unten oder rechts.
     if (this.x < this.chamber.x) {
       this.x = this.chamber.x
     } else if (this.x > this.chamber.x + this.chamber.width) {
       this.x = this.chamber.x + this.chamber.width
     }
+    //Verlässt er die Kammer entlang der X-Achse, wird die .x Variabel des Spielers auf einen an die Kammer grenzenden Wert
+    //zurückgesetzt. Dasselbe gilt für die Y-Achse:
     if (this.y < this.chamber.y) {
       this.y = this.chamber.y
     } else if (this.y > this.chamber.y + this.chamber.height) {
@@ -150,45 +156,17 @@ function Player() {
     }
   }
 
+  //Die .disp() function visualisiert den Spieler.
   this.disp = function(x, y, w, pointAtX, pointAtY) {
     this.gun.disp(x, y, w)
     this.pointingAt = [(pointAtX - x) / w, (pointAtY - y) / w]
-    /*
-    var hitx = this.x
-    var hity = this.y
-    var vec1 = createVector(this.pointingAt[0] - this.x, this.pointingAt[1] - this.y)
-    var pointingDist = dist(this.x, this.y, this.pointingAt[0], this.pointingAt[1])
-    vec1.setMag(this.walkingspeed)
-    var XYdist = pointingDist / 2
-    while (XYdist > 0 && XYdist < pointingDist) {
-      hitx += vec1.x
-      hity += vec1.y
-      XYdist = dist(this.x, this.y, hitx, hity)
-      for (hi1 = 0; hi1 < this.chamber.monsters.length; hi1++) {
-        if (this.chamber.monsters[hi1].within(hitx, hity)) {
-          stroke(0)
-          line(x + (this.x * w), y + (this.y * w), x + (hitx * w), y + (hity * w))
-          hi1 = this.chamber.monsters.length
-          XYdist = -1
-        }
-      }
-      if (hitx < this.chamber.x || hity < this.chamber.y || hitx > this.chamber.x + this.chamber.width || hity > this.chamber.y + this.chamber.height) {
-        XYdist = 0
-      }
-    }
-    stroke(40)
-    if (XYdist > 0) {
-      line(x + (this.x * w), y + (this.y * w), x + (this.pointingAt[0] * w), y + (this.pointingAt[1] * w))
-    } else if (XYdist === 0) {
-      line(x + (this.x * w), y + (this.y * w), x + (hitx * w), y + (hity * w))
-    }
-    */
     var vec1 = createVector(pointAtX - (x + (this.x * w)), pointAtY - (y + (this.y * w)))
     this.rotation = map(degreeVector(vec1), 360, 0, 0, TWO_PI) + PI/2
     translate(x + (this.x * w), y + (this.y * w))
     rotate(this.rotation)
     translate(-(x + (this.x * w)), -(y + (this.y * w)))
     if (this.hitted && this.hitted > 0) {
+      //Wurde er kürzlich getroffen, wird der Spieler rot gefärbt. (Siehe .hit())
       fill(255, 0, 0)
       this.hitted--
     } else {
