@@ -8,7 +8,7 @@ function Player() {
   this.r = 0.003
   this.rotation = 0
   this.pointingAt = [0, 0]
-  this.col = [50, 50, 255, 255]
+  this.col = [50, 255, 50, 255] // this.col = [50, 50, 255, 255]
   this.walkingspeed = 0.003
   this.gun = new Gun1(this)
   this.guns = [this.gun]
@@ -119,7 +119,9 @@ function Player() {
       if (this.chamber.item.within(this.x, this.y, this.width / 2)) {
         //Berührt der Spieler ein Item, wird die Aktion des Items ausgeführt (Siehe Key.action()) und das Item von der Kammer entfernt.
         this.chamber.item.action(this)
-        this.chamber.item = undefined
+        if (this.chamber.item.index != "sink" && this.chamber.item.index != "bottle") {
+          this.chamber.item = undefined
+        }
       }
     }
     this.gun.update()

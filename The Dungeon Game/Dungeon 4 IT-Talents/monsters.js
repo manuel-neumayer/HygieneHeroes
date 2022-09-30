@@ -9,7 +9,7 @@ function Zombie(x, y, size, chamber) {
   this.r = size / 3.333
   this.rotation = 0
   this.pointingAt = []
-  this.col = [0, 255, 0, 255]
+  this.col = [50, 50, 255, 255] // this.col = [0, 255, 0, 255]
   this.walkingspeed = size / 16
   this.t = 0
   this.hittingspeed = 40
@@ -177,6 +177,8 @@ function Ripper(x, y, size, chamber, gun) {
     this.gun = new GunR2(this)
   } else if (gun == 3) {
     this.gun = new GunR3(this)
+  } else if (gun == 4) {
+    this.gun = new Mouth(this)
   }
   this.gun.resize(this.chamber.pathweight)
   this.t = 0

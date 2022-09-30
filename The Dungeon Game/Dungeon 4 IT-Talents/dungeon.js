@@ -215,13 +215,20 @@ function Dungeon() {
     //Nun wird die Map mit Items und Monstern befüllt (Siehe .add functions von Chamber())
     for (i = 0; i < ceil(this.chambers.length / 15); i++) {
       this.chambers[floor(random(this.chambers.length))].addKey()
-      if (random(1 < (1 / 3))) {
-        this.chambers[floor(random(this.chambers.length))].addAid()
-      }
+      //if (random(1 < (1 / 3))) {
+      //  this.chambers[floor(random(this.chambers.length))].addAid()
+      //}
       this.chambers[floor(random(this.chambers.length))].addAmmo()
     }
     for (i = 0; i < this.chambers.length; i++) {
-      this.chambers[i].addBottle(floor(random(5)))
+      if (random(1) < 0.3) {
+        this.chambers[i].addRipper(4)
+      }
+      if (random(1) < 0.5) {
+        this.chambers[i].addBottle()
+      } else {
+        this.chambers[i].addSink()
+      }
       if (this.level >= 5 && random(1) < (1 / 30)) {
         if (this.level >= 12) {
           //Manche Monster tauchen erst in späteren Leveln auf.
@@ -236,6 +243,7 @@ function Dungeon() {
         this.chambers[i].addCash()
       }
     }
+    this.startchamber.item = undefined
     //Nun wird noch einmal überprüft, ob bereits eine .endchamber gefunden werden konnte.
     //Notfalls wird diese sonst zufällig gewählt. Außerdem werden Farben und Item der .endchamber angepasst
     //beziehungsweise entfernt. Dasselbe geschieht mit der .startchamber.

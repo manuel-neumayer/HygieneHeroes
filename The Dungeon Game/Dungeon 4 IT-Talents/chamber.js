@@ -57,9 +57,20 @@ function Chamber(i, cx, cy, cw, ch, cp) {
   }
 
     this.addBottle = function (number) {
-
-      var newBottle = new Bottle(this.m[0], this.m[1], this.pathweight, this, number)
+      var newBottle = new Bottle(this.m[0], this.m[1], this.pathweight, this)
       this.item = newBottle
+      this.addZombie(floor(random(4)))
+  }
+
+  this.addSink = function() {
+    w = this.pathweight * 2
+    r = random(1)
+    if (r < 0.5) {
+      p = [this.x + w/2, this.m[1]]
+    } else {
+      p = [this.m[0], this.y + w/2]
+    }
+      this.item = new Sink(p[0], p[1], w)
   }
 
   this.addRipper = function(gun) {
@@ -136,12 +147,11 @@ function Chamber(i, cx, cy, cw, ch, cp) {
   //Die .update() function steuert alle Monster der Kammer an.
   this.update = function(player) {
     for (di = 0; di < this.monsters.length; di++) {
-        this.monsters[di].update(player)
-      }
-      if (this.item != undefined && this.item.index == "bottle") {
-          this.item.update();
-      }
-
+      this.monsters[di].update(player)
+    }
+    if (this.item != undefined && this.item.index == "bottle" && player.chamber == this) {
+      this.item.update();
+    }
   }
 
   //Die .disp() function visualisiert die Kammer, gegebenenfalls ihr Item und alle ihre Monster.
@@ -311,30 +321,30 @@ function displayKey(x, y, r, col) {
   rect(x - (r / 4), y + (r  * (3 / 4)), r / 2, r / 4)
 }
 
-function Bottle(x, y, size, chamber, spawnCount) {
+function Bottle(x, y, size, chamber) {
     this.index = "bottle"
     this.chamber = chamber
     this.x = x
     this.y = y
     this.width = size
     this.height = size / 2
-    this.r = size / 3.333
+    this.r = size / 2
     this.rotation = 0
-    this.col = [128, 128, 128, 250]
+    this.col = [4, 224, 208, 255]
     this.t = 0
-    this.spawnCount = spawnCount
+    this.spawnRate = 100
+    this.closed = false
 
     this.update = function (player) {
-       // console.log("called update")
-       // if (player.chamber === this.chamber) {
-            if (this.t % 200 === 0) {
-                if (this.spawnCount > 0) {
-                    this.chamber.addZombie(1);
-                    this.spawnCount--;
-                }
-            }
-            this.t++
-      //  }
+      if (this.closed == false) {
+        if (this.t % this.spawnRate === 0) {
+          //if (this.spawnCount > 0) {
+            	this.chamber.addZombie(1);
+              //this.spawnCount--;
+          //}
+        }
+      }
+      this.t++
     }
 
     this.within = function (x, y, r) {
@@ -345,22 +355,73 @@ function Bottle(x, y, size, chamber, spawnCount) {
         }
     }
 
-    this.action = function(){
-        return
+    this.action = function() {
+      if (this.closed == false) {
+        this.closed = true
+        animations.push(new TextAnimation("You closed the lid!"))
+      }
     }
 
     this.disp = function (x, y, w) {
         translate(x + (this.x * w), y + (this.y * w))
         rotate(this.rotation)
         translate(-(x + (this.x * w)), -(y + (this.y * w)))
-
-        noStroke()
-        rect(x + ((this.x - this.width / 2) * w), y + ((this.y - this.height / 2) * w), this.width * w, this.height * w, (this.height / 4) * w)
+        //noStroke()
+        //rect(x + ((this.x - this.width / 2) * w), y + ((this.y - this.height / 2) * w), this.width * w, this.height * w, (this.height / 4) * w)
         stroke(0)
         strokeWeight(1)
+        if (this.closed == false) {
+          fill(50, 50, 255, 255)
+        } else {
+          fill(50, 50, 50, 255)
+        }
         ellipse(x + (this.x * w), y + (this.y * w), this.r * 2 * w, this.r * 2 * w)
         translate(x + (this.x * w), y + (this.y * w))
         rotate(-this.rotation)
         translate(-(x + (this.x * w)), -(y + (this.y * w)))
     }
+}
+
+function Sink(x, y, w) {
+  this.index = "sink"
+  this.x = x - (w / 2)
+  this.y = y - (w / 2)
+  this.width = w
+  this.height = w
+  this.col = [55, 55, 55, 255]
+  this.symbolcol = [10, 10, 255, 255]
+  this.used = false
+
+  this.within = function(x, y, r) {
+    if (x >= this.x - r && y >= this.y - r && x <= this.x + this.width + r && y <= this.y + this.height + r) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  this.action = function(player) {
+    if (this.used == false) {
+      player.lives = player.maxlives
+      this.used = 255
+      animations.push(new TextAnimation("You washed your hands!"))
+    }
+  }
+
+  this.disp = function(x, y, w) {
+    noStroke()
+    fill(this.col)
+    rect(x + (this.x * w), y + (this.y * w), this.width * w, this.height * w)
+    if (typeof this.used == "number") {
+      this.used -= 2
+      this.symbolcol[3] = this.used
+      if (this.used < 0) {
+        this.used = true
+      }
+    }
+    if (this.used != true) {
+      fill(this.symbolcol)
+      rect(x + (this.x * w) + (this.width * w) / 10, y + (this.y * w) + (this.height * w) / 10, this.width * (8/10) * w, this.height * (8/10) * w)
+    }
+  }
 }

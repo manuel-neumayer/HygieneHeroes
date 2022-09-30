@@ -3,12 +3,14 @@
 var dungeon, buttons
 var pause = false
 var help = false
+var animations
 
 function setup() {
   createCanvas(windowWidth, windowHeight)
   dungeon = new Dungeon()
   dungeon.setup(10)
   buttons = new Buttons()
+  animations = []
 }
 
 //Die windowResized() function sorgt dafür, dass der Canvas immer der aktuellen Fenstergräße des Browsers angepasst wird.
@@ -23,6 +25,9 @@ function draw() {
     dungeon.disp()
     if (help) {
       this.buttons.dispHelp()
+    }
+    for (i = 0; i < animations.length; i++) {
+      animations[i].disp()
     }
   }
   buttons.disp()
