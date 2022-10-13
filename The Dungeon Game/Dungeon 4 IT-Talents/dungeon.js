@@ -72,7 +72,7 @@ function Dungeon() {
     //changed to add bottles instead of zombies from matthew
       if (!intersecting) {
         var newchamber = new Chamber(i, newx, newy, newwidth, newheight, this.pathweight)
-
+          this.chambers.push(newchamber)
         newchamber.addBottle(floor(random(6)))
 
       }
