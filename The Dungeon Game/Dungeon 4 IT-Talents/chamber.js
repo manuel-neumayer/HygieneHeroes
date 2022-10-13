@@ -13,7 +13,7 @@ function Chamber(i, cx, cy, cw, ch, cp) {
   this.hilightconnection = false
   this.pathweight = cp
   this.col = [200, 200, 200, 255]
-  this.wallcol = [150, 150, 150, 255]
+  this.wallcol = [132, 31, 39, 255]
   this.connections = []
   this.item = undefined
   this.monsters = []
@@ -54,7 +54,13 @@ function Chamber(i, cx, cy, cw, ch, cp) {
       //Siehe Zombie()
       this.monsters.push(newzombie)
     }
-  }
+    }
+
+    //new function added by Matthew 9/29
+    this.addBottle = function (number) {
+        var newBottle = new Bottle(this.m[0], this.m[1], this.pathweight, this, number)
+        this.item = newBottle
+    }
 
     this.addBottle = function (number) {
       var newBottle = new Bottle(this.m[0], this.m[1], this.pathweight, this)
@@ -144,10 +150,15 @@ function Chamber(i, cx, cy, cw, ch, cp) {
     }
   }
 
-  //Die .update() function steuert alle Monster der Kammer an.
-  this.update = function(player) {
+
+ //update function was modified by matthew to include bottle update
+    this.update = function (player) {
+
     for (di = 0; di < this.monsters.length; di++) {
-      this.monsters[di].update(player)
+        this.monsters[di].update(player)
+    }
+    if (this.item != undefined && this.item.index == "bottle") {
+          this.item.update();
     }
     if (this.item != undefined && this.item.index == "bottle" && player.chamber == this) {
       this.item.update();
@@ -158,7 +169,7 @@ function Chamber(i, cx, cy, cw, ch, cp) {
   this.disp = function(x, y, w) {
     fill(this.col)
     stroke(this.wallcol)
-    strokeWeight(2)
+    strokeWeight(10)
     rect(x + (this.x * w), y + (this.y * w), this.width * w, this.height * w)
     if (this.item) {
       this.item.disp(x, y, w)
@@ -169,8 +180,64 @@ function Chamber(i, cx, cy, cw, ch, cp) {
   }
 }
 
+
+function Bottle(x, y, size, chamber, spawnCount) {
+    this.index = "bottle"
+    this.chamber = chamber
+    this.x = x
+    this.y = y
+    this.width = size
+    this.height = size / 2
+    this.r = size / 3.333
+    this.rotation = 0
+    this.col = [128, 128, 128, 250]
+    this.t = 0
+    this.spawnCount = spawnCount
+
+    this.update = function () {
+
+        //if (player.chamber === this.chamber) {
+        if (this.t % 50 === 0) {
+            if (this.spawnCount > 0) {
+                console.log("zombie spawned")
+                this.chamber.addZombie(1);
+                this.spawnCount--;
+                console.log(spawnCount)
+            }
+        }
+      //}
+        this.t++
+    }
+
+    this.within = function (x, y, r) {
+        if (x >= this.x - r && y >= this.y - r && x <= this.x + this.width + r && y <= this.y + this.height + r) {
+            return true
+        } else {return false}
+    }
+
+    this.action = function () {
+        return
+    }
+
+    this.disp = function (x, y, w) {
+        translate(x + (this.x * w), y + (this.y * w))
+        rotate(this.rotation)
+        translate(-(x + (this.x * w)), -(y + (this.y * w)))
+        noStroke()
+        rect(x + ((this.x - this.width / 2) * w), y + ((this.y - this.height / 2) * w), this.width * w, this.height * w, (this.height / 4) * w)
+        stroke(0)
+        strokeWeight(1)
+        ellipse(x + (this.x * w), y + (this.y * w), this.r * 2 * w, this.r * 2 * w)
+        translate(x + (this.x * w), y + (this.y * w))
+        rotate(-this.rotation)
+        translate(-(x + (this.x * w)), -(y + (this.y * w)))
+    }
+}  
+
+
 //Die folgenden constructerfunction sind Items, die der Spieler auf der Map in Kammern aufsammeln kann.
 //Jedes funktioniert ungefähr so:
+
 function Key(x, y, r) {
   this.index = "key"
   this.x = x

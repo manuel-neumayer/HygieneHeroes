@@ -10,6 +10,16 @@ function Dungeon() {
   this.x = 0
   this.y = 0
   this.w = height
+  this.randNumArrayX = [];
+  this.randNumArrayY = [];
+    for (i = 0; i < 100; i++) {
+        if (Math.random() * 2 == 1) { randomsignx = -1 }
+        else { randomsignx = 1 }
+        if (Math.random() * 2 == 1) { randomsigny = -1 }
+        else { randomsigny = 1 }
+        this.randNumArrayX[i] = Math.random() * 2800 * randomsignx
+        this.randNumArrayY[i] = randomy = Math.random() * 2800 * randomsigny
+    }
 
   this.setup = function(nofchambers) {
     //Die .setup() function generiert ein gesamtes Level, initialisiert also die gsamte Map (Kammern und Monster) und den Spieler selbst.
@@ -58,12 +68,13 @@ function Dungeon() {
             searching = false
           }
         }
-      }
+        }
+    //changed to add bottles instead of zombies from matthew
       if (!intersecting) {
         var newchamber = new Chamber(i, newx, newy, newwidth, newheight, this.pathweight)
-
           this.chambers.push(newchamber)
         newchamber.addBottle(floor(random(6)))
+
       }
       //Siehe Chamber()
     }
@@ -372,19 +383,42 @@ function Dungeon() {
 
   //Die .displayMap() function visualisiert die Map (Siehe .disp())
   this.displayMap = function() {
+
+    background(31, 100, 32)
+    //landscape art
+    fill(135, 206, 235)
+    noStroke();
+    ellipse(this.x - 100, this.y - 200, 1000, 400)
+    ellipse(this.x + 200, this.y - 300, 1000, 400)
+    fill(135, 206, 235, 100)
+    ellipse(this.x - 100, this.y - 200, 1100, 500)
+    ellipse(this.x + 200, this.y - 300, 1100, 500)
+    fill(135 - 20, 206 - 20, 235 - 20, 100)
+    ellipse(this.x - 100, this.y - 200, 800, 300)
+    ellipse(this.x + 200, this.y - 300, 800, 300)
+
+    for (i = 0; i < this.randNumArrayX.length; i++) {
+        fill(31-10, 100-10, 32-10)
+        ellipse(this.x + this.randNumArrayX[i], this.y + this.randNumArrayY[i], 30, 30)
+        ellipse(this.x + this.randNumArrayX[i] + 20, this.y + this.randNumArrayY[i], 30, 30)
+    }
+    //background end
+
+
     //Als erstes generiert sie einen weißen Hintergrund.
-    background(255)
     //Dann steuert sie die .disp() functions aller Verbindungen und Kammern an (Siehe Connection.disp() und Chamber.disp())
+
     for (i = 0; i < this.connections.length; i++) {
-      this.connections[i].disp(this.x, this.y, this.w)
+        this.connections[i].disp(this.x, this.y, this.w)
     }
     for (i = 0; i < this.chambers.length; i++) {
-      if (this.chambers[i].visible(this.x, this.y, this.w)) {
+        if (this.chambers[i].visible(this.x, this.y, this.w)) {
         this.chambers[i].update(this.player)
         this.chambers[i].disp(this.x, this.y, this.w)
-      }
-    }
-  }
+        }
+    } 
+  }    
+
 
   //Die .dispHub() function visualisiert das Hub.
   this.dispHub = function() {
@@ -605,6 +639,7 @@ function AmmoUpgrade() {
     }
   }
 }
+
 
 function BuyKeys() {
   this.name = "Keys"
