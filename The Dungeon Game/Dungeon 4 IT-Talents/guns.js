@@ -807,6 +807,7 @@ function Mouth(owner, pathweight) {
   this.size = pathweight / 6
   this.protectilespeed = pathweight / 8
   this.protectiles = []
+  this.t = 0
 
   this.resize = function(pathweight) {
     this.width = pathweight / 4
@@ -816,11 +817,7 @@ function Mouth(owner, pathweight) {
   }
 
   this.shoot = function() {
-    /*this.owner.cash -= this.costs
-    var vec1 = createVector(this.owner.pointingAt[0] - this.x, this.owner.pointingAt[1] - this.y)
-    vec1.setMag(this.protectilespeed)
-    var newprotectile = new Protectile(this, this.owner.chamber, this.owner, this.x, this.y, vec1.x, vec1.y, this.owner.chamber.pathweight)
-    this.protectiles.push(newprotectile)*/
+    print("!!!")
     this.shootSeveral()
   }
 
@@ -840,7 +837,8 @@ function Mouth(owner, pathweight) {
     this.owner.cash += enemy.instantcash
   }
 
-  this.update = function(enemy) {
+  this.update = function() {
+    print("updated")
     var vec1 = createVector(this.owner.width / 2, 0)
     vec1 = turnVector(vec1, map(this.owner.rotation, 0, TWO_PI, 360, 0))
     this.x = this.owner.x + vec1.x
@@ -848,13 +846,15 @@ function Mouth(owner, pathweight) {
     var vec1 = createVector(this.owner.pointingAt[0] - this.x, this.owner.pointingAt[1] - this.y)
     this.rotation = vec1.heading() + PI/2
     for (gui = this.protectiles.length - 1; gui >= 0; gui--) {
-      if (this.protectiles[gui].update(enemy)) {
+      if (this.protectiles[gui].update()) {
         this.protectiles.splice(gui, 1)
       }
     }
+    this.t++
   }
 
   this.disp = function(x, y, w) {
+    print("gun disp")
     translate(x + (this.owner.x * w), y + (this.owner.y * w))
     rotate(this.owner.rotation)
     translate(-(x + (this.owner.x * w)), -(y + (this.owner.y * w)))
@@ -911,18 +911,15 @@ function Spit(gun, chamber, owner, x, y, speedX, speedY, pathweight) {
   this.rotation = map(degreeVector(vec1), 360, 0, 0, TWO_PI)
   this.col = [30,144,255, 255]
 
-  this.update = function(enemy) {
+  this.update = function() {
+    print("spit updated!")
     this.x += this.speedX 
     this.y += this.speedY
-    for (pui = 0; pui < this.chamber.monsters.length; pui++) {
-      if (this.owner.index) {
-        if (enemy.within(this.x, this.y)) {
+    if (this.owner.index == "human") {
+      for (pui = 0; pui < this.chamber.monsters.length; pui++) {
+        enemy = this.chamber.monsters[pui]
+        if (enemy !== this.owner && enemy.within(this.x, this.y)) {
           this.gun.action(enemy)
-          return true
-        }
-      } else {
-        if (this.chamber.monsters[pui].within(this.x, this.y)) {
-          this.gun.action(this.chamber.monsters[pui])
           return true
         }
       }
@@ -930,10 +927,12 @@ function Spit(gun, chamber, owner, x, y, speedX, speedY, pathweight) {
     if (this.x < this.chamber.x || this.y < this.chamber.y || this.x > this.chamber.x + this.chamber.width || this.y > this.chamber.y + this.chamber.height) {
       return true
     }
+    return false
   }
 
 
   this.disp = function(x, y, w) {
+    print("spit displayer")
     translate(x + (this.x * w), y + (this.y * w))
     rotate(this.rotation)
     translate(-(x + (this.x * w)), -(y + (this.y * w)))

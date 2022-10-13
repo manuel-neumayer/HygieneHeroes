@@ -82,6 +82,15 @@ function Chamber(i, cx, cy, cw, ch, cp) {
     this.monsters.push(newripper)
   }
 
+  this.addHuman = function(number) {
+    for (zi = 0; zi < number; zi++) {
+      var zX = random(this.x, this.x + this.width)
+      var zY = random(this.y, this.y + this.height)
+      var newhuman = new Human(zX, zY, this.pathweight, this)
+      this.monsters.push(newhuman)
+    }
+  }
+
   //Die .intersect() function überprüft ob sich ein Rechteck mit Koordinaten x, y und Breite/Höhe w, h
   //innerhalb eines bestimmten Radius zu dieser Kammer befindet. Dabei kann aber die X- und Y-Achse gesondert betrachtet werden.
   //(Siehe Dungeon.setup())

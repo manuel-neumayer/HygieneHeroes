@@ -222,10 +222,11 @@ function Dungeon() {
     }
     for (i = 0; i < this.chambers.length; i++) {
       if (random(1) < 0.3) {
-        this.chambers[i].addRipper(4)
+        //this.chambers[i].addRipper(4)
       }
       if (random(1) < 0.5) {
-        this.chambers[i].addBottle()
+        //this.chambers[i].addBottle()
+        this.chambers[i].addHuman(ceil(random(5)))
       } else {
         this.chambers[i].addSink()
       }
