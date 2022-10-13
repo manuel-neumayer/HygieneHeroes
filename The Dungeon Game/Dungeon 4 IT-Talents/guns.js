@@ -561,7 +561,7 @@ function Protectile(gun, chamber, owner, x, y, speedX, speedY, pathweight) {
   this.speedY = speedY
   var vec1 = createVector(speedX, speedY)
   this.rotation = map(degreeVector(vec1), 360, 0, 0, TWO_PI)
-  this.col = [0, 0, 0, 255]
+  this.col = [0, 255, 0, 255]
 
   this.update = function(enemy) {
     this.x += this.speedX

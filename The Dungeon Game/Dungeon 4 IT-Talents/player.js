@@ -1,5 +1,5 @@
 function Player() {
-  this.chamber = 0
+  this.chamber = new Chamber(0,0,0,0,0,0)
   this.x = 0
   this.y = 0
   this.width = 0.01
@@ -7,7 +7,7 @@ function Player() {
   this.r = 0.003
   this.rotation = 0
   this.pointingAt = [0, 0]
-  this.col = [50, 50, 255, 255]
+  this.col = [50, 255, 50, 255]
   this.walkingspeed = 0.003
   this.gun = new Gun1(this)
   this.guns = [this.gun]

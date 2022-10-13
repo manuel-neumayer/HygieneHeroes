@@ -63,7 +63,7 @@ function Connection(chambera, chamberb, direction, pathweight) {
     this.enterPointA[0] = this.x + (this.pathweight / 2)
     this.enterPointB[0] = this.x + (this.pathweight / 2)
   }
-  this.col = [200, 200, 200, 255]
+  this.col = [132, 31, 39, 255]
   this.lockedcol = [255, 255, 0, 255]
   this.locked = false
 
