@@ -69,12 +69,15 @@ function Connection(chambera, chamberb, direction, pathweight) {
     this.enterPointA[0] = this.x + (this.pathweight / 2)
     this.enterPointB[0] = this.x + (this.pathweight / 2)
   }
+
+  this.col = [132, 31, 39, 255]
+
   //Während diesem Prozess wird auch die genaue Position der Verbindung festgelegt. Ist die Verbindung waagerecht
   //(verbindet 2 Kammern die entlang der X-Achse nebeneinander liegen) wird die die .y Variable der Verbindung
   //aus allen möglichen Optionen zufällig gewählt, ist sie senkrecht, wird die .x Variable zufällig gewählt.
   //Damit wirkt der Dungeon kofuser und verwirrender. Zuletzt werden noch die Farben des Verbindung und ob sie gesperrt
   //ist oder nicht festgelegt.
-  this.col = [200, 200, 200, 255]
+
   this.lockedcol = [255, 255, 0, 255]
   this.locked = false
 
