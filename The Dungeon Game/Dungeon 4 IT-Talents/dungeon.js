@@ -72,8 +72,8 @@ function Dungeon() {
     //changed to add bottles instead of zombies from matthew
       if (!intersecting) {
         var newchamber = new Chamber(i, newx, newy, newwidth, newheight, this.pathweight)
-          this.chambers.push(newchamber)
-        newchamber.addBottle(floor(random(6)))
+        this.chambers.push(newchamber)
+        //newchamber.addBottle(floor(random(6)))
 
       }
       //Siehe Chamber()
@@ -234,10 +234,10 @@ function Dungeon() {
       this.chambers[floor(random(this.chambers.length))].addAmmo()
     }
     for (i = 0; i < this.chambers.length; i++) {
-      if (random(1) < 0.3) {
+      if (random(1) < 0.1) {
         //this.chambers[i].addRipper(4)
       }
-      if (random(1) < 0.5) {
+      if (random(1) < 0.65) {
         //this.chambers[i].addBottle()
         this.chambers[i].addHuman(ceil(random(5)))
       } else {
