@@ -240,9 +240,11 @@ function Dungeon() {
       if (random(1) < 0.65) {
         //this.chambers[i].addBottle()
         this.chambers[i].addHuman(ceil(random(5)))
+        this.chambers[i].addCArea()
       } else {
         this.chambers[i].addSink()
       }
+      
       if (this.level >= 5 && random(1) < (1 / 30)) {
         if (this.level >= 12) {
           //Manche Monster tauchen erst in späteren Leveln auf.
@@ -657,7 +659,7 @@ function BuyKeys() {
     fill(0)
     textSize(boxheight / 10)
     text("Get " + this.keys + " temporary", x + 10, y)
-    y += textSize() + 5
+    y += textSize()
     text("keys", x + 10, y)
   }
 

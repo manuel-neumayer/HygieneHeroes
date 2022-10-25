@@ -21,8 +21,8 @@ function Player() {
   this.cash = 0
   this.instantcash = 10
   this.keys = 0
-  this.maxlives = 3
-  this.lives = 3
+  this.maxlives = 100
+  this.lives = 100
   this.maxammo = 20
   this.ammo = 20
 
@@ -116,16 +116,26 @@ function Player() {
   //Die .update() function steuert den Spieler, überprüft, ob der Spieler ein Item berührt (Siehe Key()) und steuert seine Waffe an.
   this.update = function() {
     this.move()
+    if (this.t % 200 == 0) {
+      //animations.push(new TextAnimation(!this.chamber.item))
+    }
+    
     //Siehe .move()
     if (this.chamber.item) {
       if (this.chamber.item.within(this.x, this.y, this.width / 2)) {
         //Berührt der Spieler ein Item, wird die Aktion des Items ausgeführt (Siehe Key.action()) und das Item von der Kammer entfernt.
         this.chamber.item.action(this)
-        if (this.chamber.item.index != "sink" && this.chamber.item.index != "bottle") {
+        
+        if (this.chamber.item.index != "sink" && this.chamber.item.index != "bottle" && this.chamber.item.index != "carea") {
           this.chamber.item = undefined
         }
       }
     }
+    if (!this.chamber.item || this.chamber.item.index != "carea" || !this.chamber.item.within(this.x, this.y)) {
+      if(this.t % 200 == 0) {
+        this.lives -= 1
+      }
+    } 
     this.gun.update()
     //Siehe Gun(1-5).update()
     this.t++
