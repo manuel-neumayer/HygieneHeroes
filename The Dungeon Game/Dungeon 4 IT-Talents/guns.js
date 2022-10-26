@@ -754,8 +754,8 @@ function Protectile(gun, chamber, owner, x, y, speedX, speedY, pathweight) {
 
   //Die .update() function bewegt das Protektil fort und überprüft ob es einen Gegner getroffen hat.
   this.update = function(enemy) {
-    this.x += this.speedX
-    this.y += this.speedY
+    this.x += this.speedX*2
+    this.y += this.speedY*2
     for (pui = 0; pui < this.chamber.monsters.length; pui++) {
       if (this.owner.index) {
         //Ist der Besitzer der Waffe des Protektils ein Ripper, überprüft es, ob es den Spieler getroffen hat.

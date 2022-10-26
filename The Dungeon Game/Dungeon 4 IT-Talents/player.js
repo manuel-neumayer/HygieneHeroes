@@ -178,7 +178,9 @@ function Player() {
       this.hitted = false
     }
     noStroke()
-    rect(x + ((this.x - this.width/2) * w), y + ((this.y - this.height / 2) * w), this.width * w, this.height * w, (this.height / 4) * w)
+      rect(x + ((this.x - this.width / 2) * w), y + ((this.y - this.height / 2) * w), this.width * w, this.height * w, (this.height / 2) * w)
+      //rect(x + ((this.x - this.width / 2) * w), y + ((this.y - this.height / 2) * w + 4), this.width * w, this.height * w / 4, (this.height / 4) * w)
+      //rect(x + ((this.x - this.width / 2) * w), y + ((this.y - this.height / 2) * w + 8), this.width * w, this.height * w / 4, (this.height / 4) * w)
     stroke(0)
     strokeWeight(1)
     ellipse(x + (this.x * w), y + (this.y * w), this.r * 2 * w, this.r * 2 * w)
