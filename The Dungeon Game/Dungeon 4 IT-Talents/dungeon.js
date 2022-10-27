@@ -235,14 +235,15 @@ function Dungeon() {
       this.chambers[floor(random(this.chambers.length))].addAmmo()
     }
     for (i = 0; i < this.chambers.length; i++) {
-      if (random(1) < 0.1) {
-        //this.chambers[i].addRipper(4)
+      if (random(1) < 0.4) {
+        this.chambers[i].addDeskArray()
       }
       if (random(1) < 0.65) {
         //this.chambers[i].addBottle()
         this.chambers[i].addHuman(ceil(random(5)))
       } else {
-        this.chambers[i].addSink()
+        //this.chambers[i].addSink()
+          //this.chambers[i].addDesk()
       }
       if (this.level >= 5 && random(1) < (1 / 30)) {
         if (this.level >= 12) {
