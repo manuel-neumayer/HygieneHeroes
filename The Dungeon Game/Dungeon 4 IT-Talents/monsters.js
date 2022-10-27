@@ -352,6 +352,7 @@ function Human(x, y, size, chamber, gun) {
   this.t = 0
   this.lastshot = -1000
   this.hitted = 0
+  this.posessed = false
 
   this.cash = 50
   this.instantcash = 10
@@ -408,6 +409,9 @@ function Human(x, y, size, chamber, gun) {
 
   //Die .update() function steuert den Ripper.
   this.update = function(player) {
+    if (this.posessed) {
+      return
+    }
     if (this.t % 2 === 0) {
       //Er bewegt sich wieder Zombie nur alle 2 Frames (allerdings aus Respekt vor dem Spieler)
       if (player.chamber === this.chamber) {

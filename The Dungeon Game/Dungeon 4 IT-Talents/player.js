@@ -115,7 +115,7 @@ function Player() {
 
   //Die .update() function steuert den Spieler, überprüft, ob der Spieler ein Item berührt (Siehe Key()) und steuert seine Waffe an.
   this.update = function() {
-    this.move()
+    //this.move() // --- this.move() is now called by the GameMode object, dungeon.gamemode!
     //Siehe .move()
     if (this.chamber.item) {
       if (this.chamber.item.within(this.x, this.y, this.width / 2)) {
@@ -160,12 +160,26 @@ function Player() {
     }
   }
 
-  //Die .disp() function visualisiert den Spieler.
   this.disp = function(x, y, w, pointAtX, pointAtY) {
+    if (this.posessing) {
+      this.dispDot(x, y, w)
+    } else {
+      this.pointingAt = [(pointAtX - x) / w, (pointAtY - y) / w]
+      var vec1 = createVector(pointAtX - (x + (this.x * w)), pointAtY - (y + (this.y * w)))
+      this.rotation = map(degreeVector(vec1), 360, 0, 0, TWO_PI) + PI/2
+      this.dispNormal(x, y, w)
+    }
+  }
+
+  this.dispDot = function(x, y, w) {
+      fill(this.col)
+      noStroke()
+      ellipse(x + (this.x * w), y + (this.y * w), this.r * w)
+  }
+
+  //Die .disp() function visualisiert den Spieler.
+  this.dispNormal = function(x, y, w) {
     this.gun.disp(x, y, w)
-    this.pointingAt = [(pointAtX - x) / w, (pointAtY - y) / w]
-    var vec1 = createVector(pointAtX - (x + (this.x * w)), pointAtY - (y + (this.y * w)))
-    this.rotation = map(degreeVector(vec1), 360, 0, 0, TWO_PI) + PI/2
     translate(x + (this.x * w), y + (this.y * w))
     rotate(this.rotation)
     translate(-(x + (this.x * w)), -(y + (this.y * w)))

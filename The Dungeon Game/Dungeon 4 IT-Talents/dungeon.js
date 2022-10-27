@@ -4,6 +4,7 @@
 function Dungeon() {
   this.level = 1
   this.player = new Player()
+  this.gamemode = new GameMode(this.player)
   //Die .w Variable gibt Größe der Darstellung der Map in Pixeln an. Also die Seitenlänge der quadratischen Map. (Siehe .disp())
   this.w = height
   //Die .x und .y Variablen geben den linken, oberen Eckpunkt der Map an und damit, wie weit sie verschoben ist (Siehe .update() und .disp()).
@@ -336,6 +337,7 @@ function Dungeon() {
       this.setup(10)
     }
     //Damit ist die .update() function bereits beendet!
+    this.gamemode.update()
   }
 
   //Die .disp() function visualisiert die Map, alle ihre Kammern und Monster und den Spieler. Sie kümmert sie auch um das Sichtfeld
