@@ -126,7 +126,6 @@ function Chamber(i, cx, cy, cw, ch, cp) {
                 for (y = 0; y < this.horizontal_desk_fitting_y.length; y++) {
                     console.log(i + "," + y + " desk called")
                     var newdesk = new Desk(this.horizontal_desk_fitting_x[i], this.horizontal_desk_fitting_y[y], w, o)
-                    newdesk.disp(this.horizontal_desk_fitting_x[i], this.horizontal_desk_fitting_y[y], w)
                     this.furniture.push(newdesk)
                 }
             }
@@ -137,7 +136,6 @@ function Chamber(i, cx, cy, cw, ch, cp) {
                 for (y = 0; y < this.vertical_desk_fitting_y.length; y++) {
                     console.log(i + "," + y + " desk called")
                     var newdesk = new Desk(this.vertical_desk_fitting_x[i], this.vertical_desk_fitting_y[y], w, o)
-                    newdesk.disp(this.vertical_desk_fitting_x[i], this.vertical_desk_fitting_y[y], w)
                     this.furniture.push(newdesk)
                 }
             }
@@ -251,6 +249,9 @@ function Chamber(i, cx, cy, cw, ch, cp) {
     }
     for (di = 0; di < this.monsters.length; di++) {
       this.monsters[di].disp(x, y, w)
+    }
+    for (di = 0; di < this.furniture.length; di++) {
+      this.furniture[di].disp(x, y, w)
     }
   }
 }
