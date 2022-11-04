@@ -2,9 +2,11 @@ function GameMode(player) {
     this.mode = "free"
     this.player = player
     this.posessed
+    this.timePossesed = 0
 
     this.update = function(x, y, w) {
         if (this.mode == "posessing") {
+            this.timePossesed++
             //this.player.pointingAt = [(mouseX - x) / w, (mouseY - y) / w]
             this.posessed.pointingAt = [(mouseX - x) / w, (mouseY - y) / w]
             /*var vec1 = createVector(mouseX - (x + (this.player.x * w)), mouseY - (y + (this.player.y * w)))
@@ -14,6 +16,9 @@ function GameMode(player) {
             this.player.x = this.posessed.x
             this.player.y = this.posessed.y
             this.move(this.posessed, this.posessed.walkingspeed, false)
+            if (this.timePossesed % 50 == 49) {
+                this.posessed.hit(1)
+            }
             if (keyIsDown(32)) {
                 this.posessed.posessed = false
                 this.posessed = null
@@ -34,6 +39,7 @@ function GameMode(player) {
     }
 
     this.setUpPosession = function(posessed) {
+        this.timePossesed = 0
         this.mode = "posessing"
         this.posessed = posessed
         this.posessed.posessed = true

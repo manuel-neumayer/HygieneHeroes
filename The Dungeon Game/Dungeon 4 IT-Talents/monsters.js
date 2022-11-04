@@ -374,7 +374,7 @@ function Human(x, y, size, chamber, gun, type) {
   this.within = function(x, y, r) {
     if (dist(this.x, this.y, x, y) <= (this.width + this.height) / 2) {
       if (typeof(r) === "undefined") {
-        print("something is checking human's within")
+        //print("something is checking human's within")
         if (dist(this.x, this.y, x, y) <= this.r) {
           return true
         } else {
@@ -413,6 +413,18 @@ function Human(x, y, size, chamber, gun, type) {
   //Die .update() function steuert den Ripper.
   this.update = function(player) {
     if (this.posessed) {
+      /*if (this.gun !== null) {
+        if ((this.t - this.lastshot) > this.gun.shootingspeed) {
+          //Auch er hat eine Nachladezeit ähnlich dem Spieler (Siehe Player.shoot())
+          this.gun.shoot()
+          //Siehe GunR(1-3).shoot()
+          this.lastshot = this.t
+        }
+      }
+      if (this.gun !== null) {
+        this.gun.update()
+      }
+      this.t++*/
       return
     }
     if (this.t % 2 === 0) {

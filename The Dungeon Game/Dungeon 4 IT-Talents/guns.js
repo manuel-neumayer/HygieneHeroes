@@ -856,7 +856,6 @@ function Mouth(owner, pathweight) {
   }
 
   this.disp = function(x, y, w) {
-    print("gun disp")
     translate(x + (this.owner.x * w), y + (this.owner.y * w))
     rotate(this.owner.rotation)
     translate(-(x + (this.owner.x * w)), -(y + (this.owner.y * w)))
