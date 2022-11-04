@@ -1,5 +1,7 @@
 //Das chamber.js Skript enthält die Chamber() constructerfunction, die eine Kammer im Dungeon mit allen Monstern und Items
 //darstellt und sie visualisiert und updated. Darunter finden sich die verschiedenen Items der Map. (Siehe Dungeon.update() und Dungeon.disp()).
+
+
 function Chamber(i, cx, cy, cw, ch, cp) {
   this.i = i
   this.x = cx
@@ -540,5 +542,6 @@ function CArea(x, y, w) {
     rect(x + (this.x * w), y + (this.y * w), this.width * w, this.height * w)
     fill(this.symbolcol)
     rect(x + (this.x * w) + (this.width * w) / 10, y + (this.y * w) + (this.height * w) / 10, this.width * (8/10) * w, this.height * (8/10) * w)
+    image(img, x + (this.x * w), y + (this.y * w), 1000, 1000)
   }
 }

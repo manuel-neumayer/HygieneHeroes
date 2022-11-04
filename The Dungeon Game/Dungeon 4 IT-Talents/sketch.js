@@ -4,6 +4,8 @@ var dungeon, buttons
 var pause = false
 var help = false
 var animations
+let img;
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight)
@@ -11,6 +13,8 @@ function setup() {
   dungeon.setup(10)
   buttons = new Buttons()
   animations = []
+  img = loadImage('assets/rottenapple.jpeg')
+  image(img, 0, 0) 
 }
 
 //Die windowResized() function sorgt dafür, dass der Canvas immer der aktuellen Fenstergräße des Browsers angepasst wird.
