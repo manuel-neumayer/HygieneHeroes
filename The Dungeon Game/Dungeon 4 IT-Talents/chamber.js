@@ -2,6 +2,7 @@
 //darstellt und sie visualisiert und updated. Darunter finden sich die verschiedenen Items der Map. (Siehe Dungeon.update() und Dungeon.disp()).
 
 function Chamber(i, cx, cy, cw, ch, cp, orientation) {
+  this.orientation = orientation
   this.i = i
   this.x = cx
   this.y = cy
