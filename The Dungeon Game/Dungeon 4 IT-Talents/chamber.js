@@ -1,6 +1,7 @@
 //Das chamber.js Skript enthält die Chamber() constructerfunction, die eine Kammer im Dungeon mit allen Monstern und Items
 //darstellt und sie visualisiert und updated. Darunter finden sich die verschiedenen Items der Map. (Siehe Dungeon.update() und Dungeon.disp()).
-function Chamber(i, cx, cy, cw, ch, cp) {
+function Chamber(i, cx, cy, cw, ch, cp, orientation) {
+  this.orientation = orientation
   this.i = i
   this.x = cx
   this.y = cy
@@ -12,7 +13,7 @@ function Chamber(i, cx, cy, cw, ch, cp) {
   this.connections = []
   this.hilightconnection = false
   this.pathweight = cp
-  this.col = [200, 200, 200, 255]
+  this.col = [255, 248, 220, 255]
   this.wallcol = [132, 31, 39, 255]
   this.connections = []
   this.item = undefined
@@ -25,22 +26,37 @@ function Chamber(i, cx, cy, cw, ch, cp) {
   
     this.visited = false
 
-    var w = this.pathweight*2
+    var w = this.pathweight * 2
+
     //horizontal desk coordinates
-    for (i = 1; i < Math.floor(this.width / (2 * w))+1; i++) {
-        this.horizontal_desk_fitting_x.push(this.x + i*2*w)
+    this.lh = 0
+    this.lv = 0
+    var shift = 0;
+    for (var ii = 0; ii < Math.floor(this.height / (1.5*w)) - w; ii++) {
+        for (var i = 0; i < Math.floor(this.width / (2 * w)) - 2 * w; i++) {
+            this.horizontal_desk_fitting_x.push(this.x + .75*w + i * 2 * w)
+            this.horizontal_desk_fitting_y.push(this.y + .75*w + shift)
+        }
+        shift = shift + w
     }
-    for (y = 1; y < Math.floor(this.height / (w))+1; y++) {
-        this.horizontal_desk_fitting_y.push(this.y + y * w )
+    
+    //vertical desk coordinates
+    shift = 0;
+    for (var ii = 0; ii < Math.floor(this.height / (2 * w)); ii++) {
+        for (var i = 0; i < Math.floor(this.width / (1.5 * w)) - w; i++) {
+            //console.log(this.width / (w))
+            this.vertical_desk_fitting_x.push(this.x + .75 *w + i * w)
+            this.vertical_desk_fitting_y.push(this.y + .75 *w + 2*shift)
+        }
+        shift = shift + w
     }
 
-    //vertical desk coordinates
-    for (i = 1; i < Math.floor(this.width / (2 * w))+1; i++) {
-        this.horizontal_desk_fitting_x.push(this.x + i * w)
-    }
-    for (y = 1; y < Math.floor(this.height / (w))+1; y++) {
-        this.horizontal_desk_fitting_y.push(this.y + y * 2 * w)
-    }
+    if (this.horizontal_desk_fitting_x.length > this.horizontal_desk_fitting_y.length) {
+        this.lh = this.horizontal_desk_fitting_y.length
+    } else { this.lh = this.horizontal_desk_fitting_x.length }
+    if (this.vertical_desk_fitting_x.length > this.vertical_desk_fitting_y.length) {
+        this.lv = this.vertical_desk_fitting_y.length
+    } else { this.lv = this.vertical_desk_fitting_x.length }
 
   //Die .add functions der Chamber() bereichern sie mit verschiedenen Monstern oder einem Item (Siehe Dungeon.setup()).
   this.addKey = function() {
@@ -115,31 +131,23 @@ function Chamber(i, cx, cy, cw, ch, cp) {
         this.item = new Desk(p[0], p[1], w, o)
     }
     
-    this.addDeskArray = function () {
-        console.log("desk array called")
+    this.addDeskArray = function (number) {
         w = this.pathweight * 2
-        r = random(1)
-        if (r > .5) {
-            console.log("r > .5")
+        if (number > .5) {
             o = "horizontal"
-            for (i = 0; i < this.horizontal_desk_fitting_x.length; i++) {
-                for (y = 0; y < this.horizontal_desk_fitting_y.length; y++) {
-                    console.log(i + "," + y + " desk called")
-                    var newdesk = new Desk(this.horizontal_desk_fitting_x[i], this.horizontal_desk_fitting_y[y], w, o)
-                    newdesk.disp(this.horizontal_desk_fitting_x[i], this.horizontal_desk_fitting_y[y], w)
-                    this.furniture.push(newdesk)
-                }
+            for (i = 0; i < this.lh; i++) {
+                x = this.horizontal_desk_fitting_x[i]
+                y = this.horizontal_desk_fitting_y[i]
+                var newdesk = new Desk(x, y, w, o)
+                this.furniture.push(newdesk)
             }
         } else {
-            console.log("r < .5")
             o = "vertical"
-            for (i = 0; i < this.vertical_desk_fitting_x.length; i++) {
-                for (y = 0; y < this.vertical_desk_fitting_y.length; y++) {
-                    console.log(i + "," + y + " desk called")
-                    var newdesk = new Desk(this.vertical_desk_fitting_x[i], this.vertical_desk_fitting_y[y], w, o)
-                    newdesk.disp(this.vertical_desk_fitting_x[i], this.vertical_desk_fitting_y[y], w)
-                    this.furniture.push(newdesk)
-                }
+            for (i = 0; i < this.lv; i++) {
+                x = this.vertical_desk_fitting_x[i]
+                y = this.vertical_desk_fitting_y[i]
+                var newdesk = new Desk(x, y, w, o)
+                this.furniture.push(newdesk)
             }
         }
     }
@@ -241,11 +249,35 @@ function Chamber(i, cx, cy, cw, ch, cp) {
   }
 
   //Die .disp() function visualisiert die Kammer, gegebenenfalls ihr Item und alle ihre Monster.
-  this.disp = function(x, y, w) {
-    fill(this.col)
+    this.disp = function (x, y, w) {
+    var dx = this.width * w / 10
+    var dy = this.height * w / 10
+
+        if (this.orientation < .5) {
+            for (var i = 0; i < 10; i++) {
+                fill(this.col)
+                stroke(0, 0, 0, 100)
+                strokeWeight(1)
+                rect(x + i * dx + (this.x * w), y + (this.y * w), this.width * w / 10, this.height * w)
+            }
+        } else {
+            for (var i = 0; i < 10; i++) {
+                fill(this.col)
+                stroke(0, 0, 0, 100)
+                strokeWeight(1)
+                rect(x + (this.x * w), y + i * dy + (this.y * w), this.width * w, this.height * w / 10)
+            }
+        }   
     stroke(this.wallcol)
     strokeWeight(10)
+    fill(0,0,0,0)
     rect(x + (this.x * w), y + (this.y * w), this.width * w, this.height * w)
+    
+
+      
+    for (di = 0; di < this.furniture.length; di++) {
+          this.furniture[di].disp(x, y, w)
+    }
     if (this.item) {
       this.item.disp(x, y, w)
     }
@@ -569,20 +601,19 @@ function Sink(x, y, w) {
 }
 
 function Desk(x, y, w, orientation) {
-    console.log("a desk object has been called at: "+ x + "," +y)
     this.index = "desk"
-    this.x = x - (w / 2)
-    this.y = y - (w / 2)
+    this.x = x //- (w / 2)
+    this.y = y //- (w / 2)
     this.orientation = orientation
-    if (this.orientation == "vertical") {
+    if (this.orientation == "horizontal") {
         this.width = w 
         this.height = w * .5
     }
-    if (this.orientation == "horizontal") {
+    if (this.orientation == "vertical") {
         this.width = w * .5
         this.height = w 
     }
-    this.col = [55, 55, 55, 255]
+    this.col = [106,75,	53, 255]
 
     this.within = function (x, y, r) { 
         if (x >= this.x - r && y >= this.y - r && x <= this.x + this.width + r && y <= this.y + this.height + r) {
@@ -601,8 +632,8 @@ function Desk(x, y, w, orientation) {
     }
 
     this.disp = function (x, y, w) {
-        console.log("a desk has been displayed")
-        noStroke()
+        stroke(0)
+        strokeWeight(1)
         fill(this.col)
         rect(x + (this.x * w), y + (this.y * w), this.width * w, this.height * w)    
     }
