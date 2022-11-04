@@ -580,7 +580,6 @@ function Sink(x, y, w) {
   }
 }
 
-<<<<<<< HEAD
 function CArea(x, y, w) {
   this.index = "carea"
   this.x = x - (w / 2)
@@ -610,10 +609,8 @@ function CArea(x, y, w) {
     rect(x + (this.x * w), y + (this.y * w), this.width * w, this.height * w)
     fill(this.symbolcol)
     rect(x + (this.x * w) + (this.width * w) / 10, y + (this.y * w) + (this.height * w) / 10, this.width * (8/10) * w, this.height * (8/10) * w)
-    image(img, x + (this.x * w), y + (this.y * w), 1000, 1000)
   }
 }
-=======
 function Desk(x, y, w, orientation) {
     console.log("a desk object has been called at: "+ x + "," +y)
     this.index = "desk"
@@ -653,4 +650,3 @@ function Desk(x, y, w, orientation) {
         rect(x + (this.x * w), y + (this.y * w), this.width * w, this.height * w)    
     }
 }
->>>>>>> refs/remotes/origin/main
