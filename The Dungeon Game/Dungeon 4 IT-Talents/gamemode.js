@@ -5,13 +5,14 @@ function GameMode(player) {
 
     this.update = function(x, y, w) {
         if (this.mode == "posessing") {
-            this.player.pointingAt = [(mouseX - x) / w, (mouseY - y) / w]
+            //this.player.pointingAt = [(mouseX - x) / w, (mouseY - y) / w]
             this.posessed.pointingAt = [(mouseX - x) / w, (mouseY - y) / w]
-            var vec1 = createVector(mouseX - (x + (this.x * w)), mouseY - (y + (this.y * w)))
+            /*var vec1 = createVector(mouseX - (x + (this.player.x * w)), mouseY - (y + (this.player.y * w)))
             this.posessed.rotation = map(degreeVector(vec1), 360, 0, 0, TWO_PI) + PI/2
-            xy = this.posessionPos()
-            this.player.x = xy[0]
-            this.player.y = xy[1]
+            console.log(this.posessed.rotation)*/
+            //xy = this.posessionPos()
+            this.player.x = this.posessed.x
+            this.player.y = this.posessed.y
             this.move(this.posessed, this.posessed.walkingspeed, false)
             if (keyIsDown(32)) {
                 this.posessed.posessed = false
@@ -41,11 +42,11 @@ function GameMode(player) {
         this.rotationOffset = map(degreeVector(vec), 360, 0, 0, TWO_PI) + PI/2 - this.posessed.rotation
     }
 
-    this.posessionPos = function() {
+    /*this.posessionPos = function() {
         var vec = createVector(this.player.x - this.posessed.x, this.player.y - this.posessed.y)
         vec.rotate(this.posessed.rotation + this.rotationOffset)
         return [this.posessed.x + vec.x, this.posessed.y + vec.y]
-    }
+    }*/
 
     this.move = function(character, walkingspeed, force) {
         // if force is true, we force the character to either stand still or walk at exactly the speed walkingspeed

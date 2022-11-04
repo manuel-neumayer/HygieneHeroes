@@ -25,6 +25,7 @@ function Player() {
   this.lives = 3
   this.maxammo = 20
   this.ammo = 20
+  this.posessing = false
 
   //Mit der .resize() function kann die Größe der Spielfigur der Map angepasst werde. Sie betrifft auch seine Gehgeschwindigkeit
   //und die Größe seiner Waffe (Siehe Gun(1-5).resize())
@@ -172,14 +173,20 @@ function Player() {
   }
 
   this.dispDot = function(x, y, w) {
-      fill(this.col)
+      /* as of now, the player is not displayed when possesing a human */
+      /*fill(this.col)
       noStroke()
-      ellipse(x + (this.x * w), y + (this.y * w), this.r * w)
+      ellipse(x + (this.x * w), y + (this.y * w), this.r * w)*/
   }
 
   //Die .disp() function visualisiert den Spieler.
   this.dispNormal = function(x, y, w) {
-    this.gun.disp(x, y, w)
+    // note that the gun is not displayed
+    fill(this.col)
+    noStroke()
+    ellipse(x + (this.x * w), y + (this.y * w), 4 * this.r * w)
+    // old version, where player is displayer like a human, not like a germ:
+    /*this.gun.disp(x, y, w)
     translate(x + (this.x * w), y + (this.y * w))
     rotate(this.rotation)
     translate(-(x + (this.x * w)), -(y + (this.y * w)))
@@ -200,6 +207,6 @@ function Player() {
     ellipse(x + (this.x * w), y + (this.y * w), this.r * 2 * w, this.r * 2 * w)
     translate(x + (this.x * w), y + (this.y * w))
     rotate(-this.rotation)
-    translate(-(x + (this.x * w)), -(y + (this.y * w)))
+    translate(-(x + (this.x * w)), -(y + (this.y * w)))*/
   }
 }

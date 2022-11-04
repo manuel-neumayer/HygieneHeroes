@@ -492,22 +492,44 @@ function Human(x, y, size, chamber, gun, type) {
   }
 
     this.disp = function (x, y, w) {
-        
-        translate(x + (this.x * w), y + (this.y * w))
-        rotate(this.rotation)
-        translate(-(x + (this.x * w)), -(y + (this.y * w)))
-        noStroke()
-        fill(this.col)
-        rect(x + ((this.x - this.width / 2) * w), y + ((this.y - this.height / 2) * w), this.width * w, this.height * w, (this.height / 4) * w)
-        fill(map(this.hitted, 0, 5, 232, 0), map(this.hitted, 0, 5, 190, 255), map(this.hitted, 0, 5, 172, 0))  
-        stroke(0)
-        strokeWeight(1)
-        ellipse(x + (this.x * w), y + (this.y * w), this.r * 2 * w, this.r * 2 * w)
-        translate(x + (this.x * w), y + (this.y * w))
-        rotate(-this.rotation)
-        translate(-(x + (this.x * w)), -(y + (this.y * w)))
-        if (this.gun !== null) {
-          this.gun.disp(x, y, w)
+        if (!this.posessed) {
+          translate(x + (this.x * w), y + (this.y * w))
+          rotate(this.rotation)
+          translate(-(x + (this.x * w)), -(y + (this.y * w)))
+          noStroke()
+          fill(this.col)
+          rect(x + ((this.x - this.width / 2) * w), y + ((this.y - this.height / 2) * w), this.width * w, this.height * w, (this.height / 4) * w)
+          fill(map(this.hitted, 0, 5, 232, 0), map(this.hitted, 0, 5, 190, 255), map(this.hitted, 0, 5, 172, 0))
+          stroke(0)
+          strokeWeight(1)
+          ellipse(x + (this.x * w), y + (this.y * w), this.r * 2 * w, this.r * 2 * w)
+          translate(x + (this.x * w), y + (this.y * w))
+          rotate(-this.rotation)
+          translate(-(x + (this.x * w)), -(y + (this.y * w)))
+          if (this.gun !== null) {
+            this.gun.disp(x, y, w)
+          }
+        } else {
+          this.pointingAt = [(mouseX - x) / w, (mouseY - y) / w]
+          var vec1 = createVector(mouseX - (x + (this.x * w)), mouseY - (y + (this.y * w)))
+          this.rotation = map(degreeVector(vec1), 360, 0, 0, TWO_PI) + PI/2
+          // Exact same as above, so maybe refactor into a dispNormal method
+          translate(x + (this.x * w), y + (this.y * w))
+          rotate(this.rotation)
+          translate(-(x + (this.x * w)), -(y + (this.y * w)))
+          noStroke()
+          fill(this.col)
+          rect(x + ((this.x - this.width / 2) * w), y + ((this.y - this.height / 2) * w), this.width * w, this.height * w, (this.height / 4) * w)
+          fill(map(this.hitted, 0, 5, 232, 0), map(this.hitted, 0, 5, 190, 255), map(this.hitted, 0, 5, 172, 0))
+          stroke(0)
+          strokeWeight(1)
+          ellipse(x + (this.x * w), y + (this.y * w), this.r * 2 * w, this.r * 2 * w)
+          translate(x + (this.x * w), y + (this.y * w))
+          rotate(-this.rotation)
+          translate(-(x + (this.x * w)), -(y + (this.y * w)))
+          if (this.gun !== null) {
+            this.gun.disp(x, y, w)
+          }
         }
     }
 }

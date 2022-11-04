@@ -116,7 +116,7 @@ function Chamber(i, cx, cy, cw, ch, cp) {
     }
     
     this.addDeskArray = function () {
-        console.log("desk array called")
+        //console.log("desk array called")
         w = this.pathweight * 2
         r = random(1)
         if (r > .5) {
@@ -602,7 +602,7 @@ function Desk(x, y, w, orientation) {
     }
 
     this.disp = function (x, y, w) {
-        console.log("a desk has been displayed")
+        //console.log("a desk has been displayed")
         noStroke()
         fill(this.col)
         rect(x + (this.x * w), y + (this.y * w), this.width * w, this.height * w)    
