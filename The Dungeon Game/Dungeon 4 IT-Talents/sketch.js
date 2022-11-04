@@ -4,6 +4,8 @@ var dungeon, buttons
 var pause = false
 var help = false
 var animations
+let img;
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight)

@@ -355,6 +355,7 @@ function Human(x, y, size, chamber, gun, type) {
   this.t = 0
   this.lastshot = -1000
   this.hitted = 0
+  this.posessed = false
 
   this.cash = 50
   this.instantcash = 10
@@ -411,6 +412,9 @@ function Human(x, y, size, chamber, gun, type) {
 
   //Die .update() function steuert den Ripper.
   this.update = function(player) {
+    if (this.posessed) {
+      return
+    }
     if (this.t % 2 === 0) {
       //Er bewegt sich wieder Zombie nur alle 2 Frames (allerdings aus Respekt vor dem Spieler)
       if (player.chamber === this.chamber) {
@@ -488,22 +492,44 @@ function Human(x, y, size, chamber, gun, type) {
   }
 
     this.disp = function (x, y, w) {
-        
-        translate(x + (this.x * w), y + (this.y * w))
-        rotate(this.rotation)
-        translate(-(x + (this.x * w)), -(y + (this.y * w)))
-        noStroke()
-        fill(this.col)
-        rect(x + ((this.x - this.width / 2) * w), y + ((this.y - this.height / 2) * w), this.width * w, this.height * w, (this.height / 4) * w)
-        fill(map(this.hitted, 0, 5, 232, 0), map(this.hitted, 0, 5, 190, 255), map(this.hitted, 0, 5, 172, 0))  
-        stroke(0)
-        strokeWeight(1)
-        ellipse(x + (this.x * w), y + (this.y * w), this.r * 2 * w, this.r * 2 * w)
-        translate(x + (this.x * w), y + (this.y * w))
-        rotate(-this.rotation)
-        translate(-(x + (this.x * w)), -(y + (this.y * w)))
-        if (this.gun !== null) {
-          this.gun.disp(x, y, w)
+        if (!this.posessed) {
+          translate(x + (this.x * w), y + (this.y * w))
+          rotate(this.rotation)
+          translate(-(x + (this.x * w)), -(y + (this.y * w)))
+          noStroke()
+          fill(this.col)
+          rect(x + ((this.x - this.width / 2) * w), y + ((this.y - this.height / 2) * w), this.width * w, this.height * w, (this.height / 4) * w)
+          fill(map(this.hitted, 0, 5, 232, 0), map(this.hitted, 0, 5, 190, 255), map(this.hitted, 0, 5, 172, 0))
+          stroke(0)
+          strokeWeight(1)
+          ellipse(x + (this.x * w), y + (this.y * w), this.r * 2 * w, this.r * 2 * w)
+          translate(x + (this.x * w), y + (this.y * w))
+          rotate(-this.rotation)
+          translate(-(x + (this.x * w)), -(y + (this.y * w)))
+          if (this.gun !== null) {
+            this.gun.disp(x, y, w)
+          }
+        } else {
+          this.pointingAt = [(mouseX - x) / w, (mouseY - y) / w]
+          var vec1 = createVector(mouseX - (x + (this.x * w)), mouseY - (y + (this.y * w)))
+          this.rotation = map(degreeVector(vec1), 360, 0, 0, TWO_PI) + PI/2
+          // Exact same as above, so maybe refactor into a dispNormal method
+          translate(x + (this.x * w), y + (this.y * w))
+          rotate(this.rotation)
+          translate(-(x + (this.x * w)), -(y + (this.y * w)))
+          noStroke()
+          fill(this.col)
+          rect(x + ((this.x - this.width / 2) * w), y + ((this.y - this.height / 2) * w), this.width * w, this.height * w, (this.height / 4) * w)
+          fill(map(this.hitted, 0, 5, 232, 0), map(this.hitted, 0, 5, 190, 255), map(this.hitted, 0, 5, 172, 0))
+          stroke(0)
+          strokeWeight(1)
+          ellipse(x + (this.x * w), y + (this.y * w), this.r * 2 * w, this.r * 2 * w)
+          translate(x + (this.x * w), y + (this.y * w))
+          rotate(-this.rotation)
+          translate(-(x + (this.x * w)), -(y + (this.y * w)))
+          if (this.gun !== null) {
+            this.gun.disp(x, y, w)
+          }
         }
     }
 }

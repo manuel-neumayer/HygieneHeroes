@@ -1,7 +1,7 @@
 //Das chamber.js Skript enthält die Chamber() constructerfunction, die eine Kammer im Dungeon mit allen Monstern und Items
 //darstellt und sie visualisiert und updated. Darunter finden sich die verschiedenen Items der Map. (Siehe Dungeon.update() und Dungeon.disp()).
+
 function Chamber(i, cx, cy, cw, ch, cp, orientation) {
-  this.orientation = orientation
   this.i = i
   this.x = cx
   this.y = cy
@@ -131,26 +131,41 @@ function Chamber(i, cx, cy, cw, ch, cp, orientation) {
         this.item = new Desk(p[0], p[1], w, o)
     }
     
+
     this.addDeskArray = function (number) {
+
         w = this.pathweight * 2
         if (number > .5) {
             o = "horizontal"
+
             for (i = 0; i < this.lh; i++) {
                 x = this.horizontal_desk_fitting_x[i]
                 y = this.horizontal_desk_fitting_y[i]
                 var newdesk = new Desk(x, y, w, o)
                 this.furniture.push(newdesk)
+
             }
         } else {
             o = "vertical"
+
             for (i = 0; i < this.lv; i++) {
                 x = this.vertical_desk_fitting_x[i]
                 y = this.vertical_desk_fitting_y[i]
                 var newdesk = new Desk(x, y, w, o)
                 this.furniture.push(newdesk)
+
             }
         }
     }
+
+  this.addCArea = function() {
+    w = this.pathweight * 2
+    r = random(1)
+    x = random(this.m[0], this.m[0] + w/2)
+    y = random(this.m[1], this.m[1] + w/2)
+    p = [x,y]
+    this.item = new CArea(p[0], p[1], w)
+  }
 
   this.addRipper = function(gun) {
     //Mit der Variable gun kann die Waffe des Rippers festgelegt werden.
@@ -283,6 +298,9 @@ function Chamber(i, cx, cy, cw, ch, cp, orientation) {
     }
     for (di = 0; di < this.monsters.length; di++) {
       this.monsters[di].disp(x, y, w)
+    }
+    for (di = 0; di < this.furniture.length; di++) {
+      this.furniture[di].disp(x, y, w)
     }
   }
 }
@@ -600,6 +618,37 @@ function Sink(x, y, w) {
   }
 }
 
+function CArea(x, y, w) {
+  this.index = "carea"
+  this.x = x - (w / 2)
+  this.y = y - (w / 2)
+  this.width = w
+  this.height = w
+  this.col = [55, 55, 55, 255]
+  this.symbolcol = [255, 10, 255, 255]
+
+  this.within = function(x, y, r) {
+    if (x >= this.x - r && y >= this.y - r && x <= this.x + this.width + r && y <= this.y + this.height + r) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  this.action = function(player) {
+    if(player.t % 200 == 0) {
+      player.lives += 2
+    }
+  }
+
+  this.disp = function(x, y, w) {
+    noStroke()
+    fill(this.col)
+    rect(x + (this.x * w), y + (this.y * w), this.width * w, this.height * w)
+    fill(this.symbolcol)
+    rect(x + (this.x * w) + (this.width * w) / 10, y + (this.y * w) + (this.height * w) / 10, this.width * (8/10) * w, this.height * (8/10) * w)
+  }
+}
 function Desk(x, y, w, orientation) {
     this.index = "desk"
     this.x = x //- (w / 2)
@@ -632,8 +681,10 @@ function Desk(x, y, w, orientation) {
     }
 
     this.disp = function (x, y, w) {
+
         stroke(0)
         strokeWeight(1)
+
         fill(this.col)
         rect(x + (this.x * w), y + (this.y * w), this.width * w, this.height * w)    
     }

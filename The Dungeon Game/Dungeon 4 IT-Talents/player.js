@@ -21,10 +21,11 @@ function Player() {
   this.cash = 0
   this.instantcash = 10
   this.keys = 0
-  this.maxlives = 3
-  this.lives = 3
+  this.maxlives = 100
+  this.lives = 100
   this.maxammo = 20
   this.ammo = 20
+  this.posessing = false
 
   //Mit der .resize() function kann die Größe der Spielfigur der Map angepasst werde. Sie betrifft auch seine Gehgeschwindigkeit
   //und die Größe seiner Waffe (Siehe Gun(1-5).resize())
@@ -116,16 +117,27 @@ function Player() {
   //Die .update() function steuert den Spieler, überprüft, ob der Spieler ein Item berührt (Siehe Key()) und steuert seine Waffe an.
   this.update = function() {
     this.move()
+    if (this.t % 200 == 0) {
+      //animations.push(new TextAnimation(!this.chamber.item))
+    }
+    
+    //this.move() // --- this.move() is now called by the GameMode object, dungeon.gamemode!
     //Siehe .move()
     if (this.chamber.item) {
       if (this.chamber.item.within(this.x, this.y, this.width / 2)) {
         //Berührt der Spieler ein Item, wird die Aktion des Items ausgeführt (Siehe Key.action()) und das Item von der Kammer entfernt.
         this.chamber.item.action(this)
-        if (this.chamber.item.index != "sink" && this.chamber.item.index != "bottle") {
+        
+        if (this.chamber.item.index != "sink" && this.chamber.item.index != "bottle" && this.chamber.item.index != "carea") {
           this.chamber.item = undefined
         }
       }
     }
+    if (!this.chamber.item || this.chamber.item.index != "carea" || !this.chamber.item.within(this.x, this.y)) {
+      if(this.t % 200 == 0) {
+        this.lives -= 1
+      }
+    } 
     this.gun.update()
     //Siehe Gun(1-5).update()
     this.t++
@@ -160,12 +172,32 @@ function Player() {
     }
   }
 
-  //Die .disp() function visualisiert den Spieler.
   this.disp = function(x, y, w, pointAtX, pointAtY) {
-    this.gun.disp(x, y, w)
-    this.pointingAt = [(pointAtX - x) / w, (pointAtY - y) / w]
-    var vec1 = createVector(pointAtX - (x + (this.x * w)), pointAtY - (y + (this.y * w)))
-    this.rotation = map(degreeVector(vec1), 360, 0, 0, TWO_PI) + PI/2
+    if (this.posessing) {
+      this.dispDot(x, y, w)
+    } else {
+      this.pointingAt = [(pointAtX - x) / w, (pointAtY - y) / w]
+      var vec1 = createVector(pointAtX - (x + (this.x * w)), pointAtY - (y + (this.y * w)))
+      this.rotation = map(degreeVector(vec1), 360, 0, 0, TWO_PI) + PI/2
+      this.dispNormal(x, y, w)
+    }
+  }
+
+  this.dispDot = function(x, y, w) {
+      /* as of now, the player is not displayed when possesing a human */
+      /*fill(this.col)
+      noStroke()
+      ellipse(x + (this.x * w), y + (this.y * w), this.r * w)*/
+  }
+
+  //Die .disp() function visualisiert den Spieler.
+  this.dispNormal = function(x, y, w) {
+    // note that the gun is not displayed
+    fill(this.col)
+    noStroke()
+    ellipse(x + (this.x * w), y + (this.y * w), 4 * this.r * w)
+    // old version, where player is displayer like a human, not like a germ:
+    /*this.gun.disp(x, y, w)
     translate(x + (this.x * w), y + (this.y * w))
     rotate(this.rotation)
     translate(-(x + (this.x * w)), -(y + (this.y * w)))
@@ -186,6 +218,6 @@ function Player() {
     ellipse(x + (this.x * w), y + (this.y * w), this.r * 2 * w, this.r * 2 * w)
     translate(x + (this.x * w), y + (this.y * w))
     rotate(-this.rotation)
-    translate(-(x + (this.x * w)), -(y + (this.y * w)))
+    translate(-(x + (this.x * w)), -(y + (this.y * w)))*/
   }
 }
