@@ -13,13 +13,13 @@ function Dungeon() {
   this.w = height
   this.randNumArrayX = [];
   this.randNumArrayY = [];
-    for (i = 0; i < 100; i++) {
+    for (i = 0; i < 300; i++) {
         if (Math.random() * 2 == 1) { randomsignx = -1 }
         else { randomsignx = 1 }
         if (Math.random() * 2 == 1) { randomsigny = -1 }
         else { randomsigny = 1 }
-        this.randNumArrayX[i] = Math.random() * 2800 * randomsignx
-        this.randNumArrayY[i] = randomy = Math.random() * 2800 * randomsigny
+        this.randNumArrayX[i] = Math.random() * 3000 * randomsignx
+        this.randNumArrayY[i] = randomy = Math.random() * 3000 * randomsigny
     }
 
   this.setup = function(nofchambers) {
@@ -72,7 +72,7 @@ function Dungeon() {
         }
     //changed to add bottles instead of zombies from matthew
       if (!intersecting) {
-        var newchamber = new Chamber(i, newx, newy, newwidth, newheight, this.pathweight)
+        var newchamber = new Chamber(i, newx, newy, newwidth, newheight, this.pathweight, random(1))
         this.chambers.push(newchamber)
         //newchamber.addBottle(floor(random(6)))
 
@@ -235,8 +235,8 @@ function Dungeon() {
       this.chambers[floor(random(this.chambers.length))].addAmmo()
     }
     for (i = 0; i < this.chambers.length; i++) {
-      if (random(1) < 0.4) {
-        this.chambers[i].addDeskArray()
+      if (random(1) < 0.3) {
+            this.chambers[i].addDeskArray(random(1))
       }
       if (random(1) < 0.65) {
         //this.chambers[i].addBottle()
@@ -261,7 +261,7 @@ function Dungeon() {
         this.chambers[i].addCash()
       }
     }
-    this.startchamber.item = undefined
+      this.startchamber.item = undefined
     //Nun wird noch einmal überprüft, ob bereits eine .endchamber gefunden werden konnte.
     //Notfalls wird diese sonst zufällig gewählt. Außerdem werden Farben und Item der .endchamber angepasst
     //beziehungsweise entfernt. Dasselbe geschieht mit der .startchamber.
@@ -270,12 +270,14 @@ function Dungeon() {
     }
     this.endchamber.col = this.connections[0].lockedcol
     this.endchamber.wallcol = [230, 230, 230, 255]
-    this.endchamber.item = undefined
+      this.endchamber.item = undefined
+      
     if (!this.startchamber) {
       this.startchamber = this.chambers[1]
     }
     this.startchamber.monsters = []
-    this.endchamber.monsters = []
+      this.endchamber.monsters = []
+      this.endchamber.furniture = []
     //Damit ist die Map (also alle Kammern, Monster und Verbindungen) initialisiert. Hurra!
     //Zum Schluss wird noch die .zoom Variable festgelegt (sie bestimmt später wie groß die Map dargestellt wird) und der Spieler
     //mit der .goToChamber() function an seinen Ausgangspunkt geschickt.
