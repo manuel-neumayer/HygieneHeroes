@@ -12,7 +12,8 @@ function Gun1(owner, pathweight) {
   this.width = pathweight / 8
   this.height = pathweight * (1.5 / 3)
   this.size = pathweight / 6
-  this.protectilespeed = (pathweight / 8) / 1.25
+  // Changed protectielspeed: used to be = (pathweight / 8) / 1.25
+  this.protectilespeed = 2 * (pathweight / 8) / 1.25
   this.protectiles = []
 
   //Mit der .resize() function kann die Größe der Waffe sowie die Geschwindigkeit ihrer Patronen festgelegt werden.
@@ -754,8 +755,8 @@ function Protectile(gun, chamber, owner, x, y, speedX, speedY, pathweight) {
 
   //Die .update() function bewegt das Protektil fort und überprüft ob es einen Gegner getroffen hat.
   this.update = function(enemy) {
-    this.x += this.speedX
-    this.y += this.speedY
+    this.x += this.speedX*2
+    this.y += this.speedY*2
     for (pui = 0; pui < this.chamber.monsters.length; pui++) {
       if (this.owner.index) {
         //Ist der Besitzer der Waffe des Protektils ein Ripper, überprüft es, ob es den Spieler getroffen hat.

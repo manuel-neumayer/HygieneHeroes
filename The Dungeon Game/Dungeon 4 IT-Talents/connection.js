@@ -84,6 +84,9 @@ function Connection(chambera, chamberb, direction, pathweight) {
   //Die .check() function überprüft, ob der Spieler gerade versucht diese Verbindung zu passieren und reagiert entsprechend.
   //(Siehe Dungeon.update())
   this.check = function(player) {
+    if (player.posessing) {
+      return undefined
+    }
     if (player.chamber === this.chamberA) {
       //Befindet der Spielr sich in .chamberA, überprüft die function seinen Abstand zum accesPoint der .chamberA (.accesPointA).
       if (dist(player.x, player.y, this.accesPointA[0], this.accesPointA[1]) <= this.pathweight / 2) {
