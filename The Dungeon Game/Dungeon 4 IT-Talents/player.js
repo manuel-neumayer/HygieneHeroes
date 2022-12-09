@@ -128,7 +128,7 @@ function Player() {
         //Berührt der Spieler ein Item, wird die Aktion des Items ausgeführt (Siehe Key.action()) und das Item von der Kammer entfernt.
         this.chamber.item.action(this)
         
-        if (this.chamber.item.index != "sink" && this.chamber.item.index != "bottle" && this.chamber.item.index != "carea") {
+          if (this.chamber.item.index != "sink" && this.chamber.item.index != "bottle" && this.chamber.item.index != "carea" && this.chamber.item.index != "flyWindow") {
           this.chamber.item = undefined
         }
       }

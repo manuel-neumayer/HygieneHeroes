@@ -85,15 +85,15 @@ function Chamber(i, cx, cy, cw, ch, cp, orientation) {
   }
 
     this.addZombie = function (number) {
-     // console.log("asajfkadfhsd")
+    // console.log("asajfkadfhsd")
     //Mit der Variable number können mehrere Monster zugleich initialisiert werden (Siehe Dungeon.setup()).
-    for (zi = 0; zi < number; zi++) {
-      var zX = random(this.x, this.x + this.width)
-      var zY = random(this.y, this.y + this.height)
-      var newzombie = new Zombie(zX, zY, this.pathweight, this)
-      //Siehe Zombie()
-      this.monsters.push(newzombie)
-    }
+        for (zi = 0; zi < number; zi++) {
+          var zX = random(this.x, this.x + this.width)
+          var zY = random(this.y, this.y + this.height)
+          var newzombie = new Zombie(zX, zY, this.pathweight, this)
+          //Siehe Zombie()
+          this.monsters.push(newzombie)
+        }
     }
 
     //new function added by Matthew 9/29
@@ -108,16 +108,31 @@ function Chamber(i, cx, cy, cw, ch, cp, orientation) {
       this.addZombie(floor(random(4)))
     }
 
-  this.addSink = function() {
-    w = this.pathweight * 2
-    r = random(1)
-    if (r < 0.5) {
-      p = [this.x + w/2, this.m[1]]
-    } else {
-      p = [this.m[0], this.y + w/2]
+    this.addSink = function() {
+        w = this.pathweight * 2
+        r = random(1)
+            if (r < 0.5) {
+                p = [this.x + w/2, this.m[1]]
+            } else {
+                p = [this.m[0], this.y + w/2]
+            }
+        this.item = new Sink(p[0], p[1], w)
     }
-      this.item = new Sink(p[0], p[1], w)
-   }
+
+    this.addflyWindow = function () {
+        if (random(1) < 0.5) {
+            p = [this.x + this.pathweight / 2, this.m[1]]
+            o = "vertical"
+        } else {
+            p = [this.m[0], this.y + this.pathweight  / 2]
+            o = "horizontal"
+        }
+
+        console.log(this.x + this.pathweight / 2 + "," + this.m[1])
+        var fwindow = new flyWindow(p[0], p[1], this.pathweight*2, o, this)
+        this.item = fwindow
+
+    }
 
     this.addDesk = function () {
         w = this.pathweight * 2
@@ -259,6 +274,9 @@ function Chamber(i, cx, cy, cw, ch, cp, orientation) {
     if (this.item != undefined && this.item.index == "bottle") {
           this.item.update();
     }
+    if (this.item != undefined && this.item.index == "flyWindow") {
+            this.item.update();
+    }
     if (this.item != undefined && this.item.index == "bottle" && player.chamber == this) {
       this.item.update();
     }
@@ -294,7 +312,8 @@ function Chamber(i, cx, cy, cw, ch, cp, orientation) {
     for (di = 0; di < this.furniture.length; di++) {
           this.furniture[di].disp(x, y, w)
     }
-    if (this.item) {
+      if (this.item) {
+      console.log(this.item)
       this.item.disp(x, y, w)
     }
     for (di = 0; di < this.monsters.length; di++) {
@@ -323,14 +342,15 @@ function Bottle(x, y, size, chamber, spawnCount) {
     this.update = function () {
 
         //if (player.chamber === this.chamber) {
-        if (this.t % 50 === 0) {
-            if (this.spawnCount > 0) {
-                console.log("zombie spawned")
-                this.chamber.addZombie(1);
-                this.spawnCount--;
-                console.log(spawnCount)
+
+            if (this.t % 50 === 0) {
+                if (this.spawnCount > 0) {
+                    console.log("zombie spawned")
+                    this.chamber.addZombie(1);
+                    this.spawnCount--;
+                    console.log(spawnCount)
+                }
             }
-        }
       //}
         this.t++
     }
@@ -575,6 +595,58 @@ function Bottle(x, y, size, chamber) {
     }
 }
 
+function flyWindow(x, y, w, orientation, chamber) {
+    this.index = "flyWindow"
+    this.x = x - (w / 2)
+    this.y = y - (w / 2)
+    this.col = [200, 200, 200, 125]
+    this.open = false
+    this.t = 0
+    this.orientation = orientation
+    this.spawnCount = 5
+    this.chamber = chamber
+
+    if (this.orientation == "horizontal") {
+        this.width = w*1.3
+        this.height = w * .5
+    }
+    if (this.orientation == "vertical") {
+        this.width = w * .5
+        this.height = w * 1.3
+    }
+
+    this.update = function () {
+        if (this.open == true && this.t % 100 == 0) {
+            if (this.spawnCount > 0) {
+                this.chamber.addZombie(1)
+                this.spawnCount--
+            }
+        }
+        this.t++
+    }
+    
+    this.within = function (x, y, r) {
+        if (x >= this.x - r && y >= this.y - r && x <= this.x + this.width + r && y <= this.y + this.height + r) {   
+            return true
+        } else {
+            return false
+        }
+    }
+
+    this.action = function (player) {
+        if (this.open == false) {
+            this.open = true
+            this.col = [200, 200, 200, 0]
+        }
+    }
+
+    this.disp = function (x, y, w) {
+        noStroke()
+        fill(this.col)
+        rect(x + (this.x * w), y + (this.y * w), this.width * w, this.height * w)
+    }
+}
+
 function Sink(x, y, w) {
   this.index = "sink"
   this.x = x - (w / 2)
@@ -667,7 +739,7 @@ function Desk(x, y, w, orientation) {
 
     this.within = function (x, y, r) { 
         if (x >= this.x - r && y >= this.y - r && x <= this.x + this.width + r && y <= this.y + this.height + r) {
-            return false
+            return true
         } else {
             return false
         }
@@ -687,6 +759,6 @@ function Desk(x, y, w, orientation) {
         strokeWeight(1)
 
         fill(this.col)
-        rect(x + (this.x * w), y + (this.y * w), this.width * w, this.height * w)    
+        rect(x + (this.x * w), y + (this.y * w), this.width * w, this.height * w)
     }
 }
