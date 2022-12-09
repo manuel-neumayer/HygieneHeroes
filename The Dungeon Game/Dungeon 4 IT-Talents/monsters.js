@@ -9,7 +9,7 @@ function Zombie(x, y, size, chamber) {
   this.r = size / 3.333
   this.rotation = 0
   this.pointingAt = []
-  this.col = [50, 50, 255, 255] // this.col = [0, 255, 0, 255]
+  this.col = [0, 0, 0, 255] // this.col = [0, 255, 0, 255]
   this.walkingspeed = size / 16
   this.t = 0
   this.hittingspeed = 40
@@ -145,9 +145,11 @@ function Zombie(x, y, size, chamber) {
       this.hitted = false
     }
     noStroke()
+    fill(100,100,100,150)
     rect(x + ((this.x - this.width/2) * w), y + ((this.y - this.height / 2) * w), this.width * w, this.height * w, (this.height / 4) * w)
     stroke(0)
     strokeWeight(1)
+    fill(this.col)
     ellipse(x + (this.x * w), y + (this.y * w), this.r * 2 * w, this.r * 2 * w)
     translate(x + (this.x * w), y + (this.y * w))
     rotate(-this.rotation)

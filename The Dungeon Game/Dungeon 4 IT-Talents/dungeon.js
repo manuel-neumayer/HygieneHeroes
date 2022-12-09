@@ -238,8 +238,9 @@ function Dungeon() {
       if (random(1) < 0.3) {
             this.chambers[i].addDeskArray(random(1))
       }
-      if (random(1) < 0.65) {
+      if (random(1) < 1/*0.658*/) {
         //this.chambers[i].addBottle()
+        this.chambers[i].addflyWindow()
         this.chambers[i].addHuman(ceil(random(5)))
       } else {
         //this.chambers[i].addSink()
